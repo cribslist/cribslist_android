@@ -8,9 +8,9 @@ The following **required** functionality is completed:
 
 * [ ] User can **sign up/ log in** using email address
 * [ ] User can **view list of items** from main screen
-  * [ ] Item is displayed image, title, and location.
+* [ ] Item is displayed image, title, and location.
 * [ ] User can **post an item to sell**
-  * [ ] User can click a “+” icon on the bottom right, and see the item detail screen.
+* [ ] User can click a “+” icon on the bottom right, and see the item detail screen.
 * [ ] User can **write a comment** of the item
 
 The following **optional** features are implemented:
@@ -38,7 +38,7 @@ Describe any challenges encountered while building the app.
 
 ## License
 
-    Copyright Sukwon Lee [name of copyright owner]
+    Copyright Sukwon Lee & Morgan Plant
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
