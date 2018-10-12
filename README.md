@@ -18,6 +18,7 @@ The following **optional** features are implemented:
 
 * [ ] User can **sign up/ log in** using social media
 * [ ] User can **view items in the map** from main screen
+* [ ] User will **receive push notification** when someone leaves a comment
 
 
 ## Video Walkthrough
