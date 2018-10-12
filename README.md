@@ -12,6 +12,7 @@ The following **required** functionality is completed:
 * [ ] User can **post an item to sell**
 * [ ] User can click a “+” icon on the bottom right, and see the item detail screen.
 * [ ] User can **write a comment** of the item
+* [ ] User can **see their commented item on account activity** 
 
 The following **optional** features are implemented:
 
