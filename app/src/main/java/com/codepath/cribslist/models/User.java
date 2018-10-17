@@ -9,5 +9,5 @@ public class User {
     private String description;
     private double rating;
     private Item items[];
-    private String user_photo_url;
+    private String userPhotoURL;
 }
