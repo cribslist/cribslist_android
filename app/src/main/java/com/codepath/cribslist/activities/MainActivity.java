@@ -1,5 +1,6 @@
 package com.codepath.cribslist;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -16,6 +17,7 @@ import com.codepath.cribslist.adapters.ItemAdapter;
 import com.codepath.cribslist.constants.API_PARAM;
 import com.codepath.cribslist.constants.API_ROUTE;
 import com.codepath.cribslist.models.Item;
+import com.codepath.cribslist.activities.AccountActivity;
 import com.crashlytics.android.Crashlytics;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -124,5 +126,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void launchUserActivity() {
+        Intent i = new Intent(this, AccountActivity.class);
+        startActivity(i);
     }
 }
