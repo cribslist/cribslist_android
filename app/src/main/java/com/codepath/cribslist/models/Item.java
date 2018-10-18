@@ -1,7 +1,6 @@
 package com.codepath.cribslist.models;
 
 import com.codepath.cribslist.constants.ITEM_FIELD;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,14 +10,16 @@ import java.util.ArrayList;
 public class Item {
     private long uid;
     private String title;
+    private long price;
     private String description;
     private long sellerID;
     private String location;
     private double latitude;
     private double longitude;
     private String created;
-    private String category;
     private ArrayList<String> photoURLs;
+    private String category;
+    private String thumbnailURL;
 
     public long getUid() {
         return uid;
@@ -56,7 +57,6 @@ public class Item {
         return thumbnailURL;
     }
 
-    private String thumbnailURL;
     public Item(JSONObject jsonObject) throws JSONException{
         this.uid = jsonObject.getLong(ITEM_FIELD.ID);
         this.title = jsonObject.getString(ITEM_FIELD.TITLE);
@@ -73,6 +73,7 @@ public class Item {
         thumbnailURL = jsonObject.getString(ITEM_FIELD.THUMBNAIL);
 
     }
+
     public static ArrayList<Item> fromJSONArray(JSONArray array) {
         ArrayList<Item> results = new ArrayList<>();
         try {

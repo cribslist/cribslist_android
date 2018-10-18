@@ -1,5 +1,6 @@
-package com.codepath.cribslist;
+package com.codepath.cribslist.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.codepath.cribslist.R;
 import com.codepath.cribslist.adapters.ItemAdapter;
 import com.codepath.cribslist.constants.API_PARAM;
 import com.codepath.cribslist.constants.API_ROUTE;
@@ -41,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Fabric.with(this, new Crashlytics());
-
+        
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -124,5 +126,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void launchAccountActivity() {
+        Intent i = new Intent(this, AccountActivity.class);
+        startActivity(i);
     }
 }
