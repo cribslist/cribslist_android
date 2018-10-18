@@ -26,11 +26,12 @@ public class AccountActivity extends AppCompatActivity {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Log.d("DEBUG", response.toString());
                 try {
-                    user = User.fromJSON(response);
+                    user = new User(response);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 Log.d("DEBUG", user.toString());
+
             }
         });
     }

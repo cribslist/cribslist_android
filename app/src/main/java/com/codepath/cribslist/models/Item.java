@@ -17,9 +17,9 @@ public class Item {
     private double latitude;
     private double longitude;
     private String created;
-<<<<<<< HEAD
-    private String category;
     private ArrayList<String> photoURLs;
+    private String category;
+    private String thumbnailURL;
 
     public long getUid() {
         return uid;
@@ -57,7 +57,6 @@ public class Item {
         return thumbnailURL;
     }
 
-    private String thumbnailURL;
     public Item(JSONObject jsonObject) throws JSONException{
         this.uid = jsonObject.getLong(ITEM_FIELD.ID);
         this.title = jsonObject.getString(ITEM_FIELD.TITLE);
@@ -74,6 +73,7 @@ public class Item {
         thumbnailURL = jsonObject.getString(ITEM_FIELD.THUMBNAIL);
 
     }
+
     public static ArrayList<Item> fromJSONArray(JSONArray array) {
         ArrayList<Item> results = new ArrayList<>();
         try {
@@ -89,35 +89,3 @@ public class Item {
         return results;
     }
 }
-=======
-    private ArrayList<Integer> category;
-    private ArrayList<String> photoURLs;
-    private String thumbnailURL;
-
-    public static Item fromJSON(JSONObject jsonObject) throws JSONException {
-        Item item = new Item();
-        item.uid = jsonObject.getLong("id");
-        item.title = jsonObject.getString("title");
-        item.description= jsonObject.getString("description");
-        item.price= jsonObject.getLong("price");
-        item.sellerID = jsonObject.getLong("seller");
-        item.created = jsonObject.getString("created");
-        item.thumbnailURL = jsonObject.getString("thumbnail_url");
-
-        JSONArray jsonCategory = jsonObject.getJSONArray("category");
-        ArrayList<Integer> category = new ArrayList<>();
-        for (int i = 0; i < jsonCategory.length(); i++) {
-            category.add((Integer) jsonCategory.get(i));
-        }
-        item.category = category;
-
-        JSONArray jsonPhotoURLs = jsonObject.getJSONArray("photo_urls");
-        ArrayList<String> photoURLs = new ArrayList<>();
-        for (int i = 0; i < jsonPhotoURLs.length(); i++) {
-            photoURLs.add((String) jsonPhotoURLs.get(i));
-        }
-        item.photoURLs = photoURLs;
-        return item;
-    }
-}
->>>>>>> Update models with parsing logic. Add UserActivity to load user account.
