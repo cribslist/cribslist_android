@@ -4,16 +4,36 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
+import com.codepath.cribslist.adapters.ItemAdapter;
+import com.codepath.cribslist.constants.API_PARAM;
+import com.codepath.cribslist.constants.API_ROUTE;
+import com.codepath.cribslist.models.Item;
 import com.crashlytics.android.Crashlytics;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
+import cz.msebera.android.httpclient.Header;
 import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends AppCompatActivity {
+    int numberOfColumns = 2;
+    RecyclerView mRecyclerView;
+    RecyclerView.Adapter mAdapter;
+    ArrayList<Item> items;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +53,56 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        mRecyclerView = findViewById(R.id.items);
+
+        GridLayoutManager layoutManager = new GridLayoutManager(this, numberOfColumns);
+        mRecyclerView.setLayoutManager(layoutManager);
+        items = new ArrayList<>();
+        mAdapter = new ItemAdapter(items);
+        mRecyclerView.setAdapter(mAdapter);
+        loadNextDataFromApi(-1);
+
+//        scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+//            @Override
+//            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+//                loadNextDataFromApi(page);
+//            }
+//        };
+
+//        mRecyclerView.addOnScrollListener(scrollListener);
     }
+
+    public void loadNextDataFromApi(int page){
+        AsyncHttpClient client = new AsyncHttpClient();
+        RequestParams params = getRequestParams(page);
+        client.get(API_ROUTE.ITEMS, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                super.onSuccess(statusCode, headers, response);
+                items.addAll(Item.fromJSONArray(response));
+                mAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                Toast.makeText(getApplicationContext(), getResources().getText(R.string.api_error), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public RequestParams getRequestParams(int page){
+        RequestParams params = new RequestParams();
+        // todo add this functionality later
+        if(page == -1){
+            return params;
+        }
+        params.put(API_PARAM.COUNT, 10);
+        params.put(API_PARAM.PAGE, page);
+        return params;
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
