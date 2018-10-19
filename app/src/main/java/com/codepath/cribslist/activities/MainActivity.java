@@ -41,6 +41,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        launchAccountActivity();
+
+
+
+
+
+
+
+
+
+
+
         Fabric.with(this, new Crashlytics());
         
         Toolbar toolbar = findViewById(R.id.toolbar);
