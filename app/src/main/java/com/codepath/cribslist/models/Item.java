@@ -1,9 +1,11 @@
 package com.codepath.cribslist.models;
 
+import android.location.Address;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.codepath.cribslist.constants.ITEM_FIELD;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -132,6 +134,22 @@ public class Item implements Parcelable {
         category = in.readString();
         in.readStringList(photoURLs);
         thumbnailURL = in.readString();
+    }
+
+    public void setLocationName(String locationName) {
+        this.location = locationName;
+    }
+
+    public void setLocationFull(Address address){
+        this.longitude = address.getLongitude();
+        this.latitude = address.getLatitude();
+        this.location = address.getLocality();
+    }
+
+    public void setLocationFull(Address address, String name){
+        this.longitude = address.getLongitude();
+        this.latitude = address.getLatitude();
+        this.location = name;
     }
 
     @Override
