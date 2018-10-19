@@ -15,4 +15,6 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="get_location">Get Location</string>
+    <string name="permission_message">Please enable location permission to continue</string>
 </resources>
