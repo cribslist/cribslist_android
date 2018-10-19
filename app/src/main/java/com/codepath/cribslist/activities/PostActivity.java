@@ -15,13 +15,18 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.baoyz.actionsheet.ActionSheet;
 import com.codepath.cribslist.R;
 
 import java.io.File;
 import java.io.IOException;
 
-public class PostActivity extends AppCompatActivity {
+public class PostActivity extends AppCompatActivity implements ActionSheet.ActionSheetListener {
     private static final String TITLE_TEXT = "New Item";
+    private static final String CHOOSE_FROM_LIBRARY = "CHOOSE FROM LIBRARY";
+    private static final String TAKE_A_PHOTO = "TAKE A PHOTO";
+    private static final String CANCEL = "CANCEL";
+
     private final String APP_TAG = "MyCustomApp";
     private final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
     public final static int PICK_PHOTO_CODE = 1046;
@@ -121,7 +126,25 @@ public class PostActivity extends AppCompatActivity {
     }
 
     public void onClickImageView(View view) {
-        onPickPhoto();
-        //onLaunchCamera();
+        ActionSheet.createBuilder(this, getSupportFragmentManager())
+                .setCancelButtonTitle(CANCEL)
+                .setOtherButtonTitles(TAKE_A_PHOTO, CHOOSE_FROM_LIBRARY)
+                .setCancelableOnTouchOutside(true)
+                .setListener(this)
+                .show();
+    }
+
+    @Override
+    public void onDismiss(ActionSheet actionSheet, boolean isCancel) {
+
+    }
+
+    @Override
+    public void onOtherButtonClick(ActionSheet actionSheet, int index) {
+        if (index == 0) {
+            onLaunchCamera();
+        } else {
+            onPickPhoto();
+        }
     }
 }
