@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        launchPostActivity();// revert me
+
         Fabric.with(this, new Crashlytics());
         
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -130,6 +132,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void launchAccountActivity() {
         Intent i = new Intent(this, AccountActivity.class);
+        startActivity(i);
+    }
+
+    private void launchPostActivity() {
+        Intent i = new Intent(this, PostActivity.class);
         startActivity(i);
     }
 }

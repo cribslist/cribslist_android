@@ -20,4 +20,5 @@
     <string name="permission_message">Please enable location permission to continue</string>
     <string name="user_name">User Name</string>
     <string name="user_email">User Email</string>
+    <string name="newitemimage">newItemImage</string>
 </resources>
