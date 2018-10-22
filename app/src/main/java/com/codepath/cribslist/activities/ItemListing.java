@@ -29,7 +29,7 @@ import java.util.Locale;
 public class ItemListing extends AppCompatActivity {
     private final int REQUEST_FINE_LOCATION = 10;
     private TextView locationText;
-    private Item itemForSale;
+    private Item itemForSale = new Item();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
