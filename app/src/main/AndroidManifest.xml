@@ -42,7 +42,8 @@
             android:label="@string/app_name" />
         <activity android:name=".activities.AccountActivity" />
         <activity android:name=".activities.ItemListing" />
-        <activity android:name=".activities.PostActivity"></activity>
+        <activity android:name=".activities.PostActivity"/>
+        <activity android:name=".activities.ItemDetail" />
 
 
         <provider
