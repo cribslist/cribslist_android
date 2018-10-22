@@ -121,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            launchAccountActivity();
             return true;
         }
 
@@ -129,6 +130,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void launchAccountActivity() {
         Intent i = new Intent(this, AccountActivity.class);
+        startActivity(i);
+    }
+
+    private void launchPostActivity() {
+        Intent i = new Intent(this, PostActivity.class);
         startActivity(i);
     }
 }
