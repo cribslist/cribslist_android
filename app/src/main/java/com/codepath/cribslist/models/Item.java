@@ -23,8 +23,8 @@ public class Item implements Parcelable {
     private double longitude;
     private String created;
     private String category;
-    private ArrayList<String> photoURLs = new ArrayList<>();
     private String thumbnailURL;
+    private ArrayList<String> photoURLs = new ArrayList<>();
 
     public long getUid() {
         return uid;
@@ -115,25 +115,29 @@ public class Item implements Parcelable {
         out.writeLong(price);
         out.writeString(description);
         out.writeLong(sellerID);
-        out.writeString(category);
+        out.writeString(location);
+        out.writeDouble(latitude);
+        out.writeDouble(longitude);
         out.writeString(created);
-        out.writeStringList(photoURLs);
+        out.writeString(category);
         out.writeString(thumbnailURL);
+        out.writeStringList(photoURLs);
     }
 
     private Item(Parcel in) {
-        uid = in.readLong();
-        title = in.readString();
-        price = in.readLong();
-        description = in.readString();
-        sellerID = in.readLong();
-        location = in.readString();
-        latitude = in.readDouble();
-        longitude = in.readDouble();
-        created = in.readString();
-        category = in.readString();
+        this.uid = in.readLong();
+        this.title = in.readString();
+        this.price = in.readLong();
+        this.description = in.readString();
+        this.sellerID = in.readLong();
+        this.location = in.readString();
+        this.latitude = in.readDouble();
+        this.longitude = in.readDouble();
+        this.created = in.readString();
+        this.category = in.readString();
+        this.thumbnailURL = in.readString();
         in.readStringList(photoURLs);
-        thumbnailURL = in.readString();
+
     }
 
     public void setLocationName(String locationName) {

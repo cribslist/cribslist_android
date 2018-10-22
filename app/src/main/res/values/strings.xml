@@ -21,4 +21,7 @@
     <string name="user_name">User Name</string>
     <string name="user_email">User Email</string>
     <string name="newitemimage">newItemImage</string>
+    <string name="location_icon">location icon</string>
+    <string name="prof_pic">profile pic</string>
+    <string name="inquire">Inquire</string>
 </resources>
