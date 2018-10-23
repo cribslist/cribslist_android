@@ -66,6 +66,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
 
+    private DisplayStatus displayStatus;
+
+    enum DisplayStatus {
+        LOG_IN, REGISTER
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,6 +107,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        setDisplayStatus(DisplayStatus.LOG_IN);
 
         launchMainActivity();
     }
@@ -294,7 +302,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
     }
-    
+
+    public void onClickSwitchButton(View view) {
+        switch (displayStatus) {
+            case LOG_IN:
+                setDisplayStatus(DisplayStatus.REGISTER);
+                break;
+            case REGISTER:
+                setDisplayStatus(DisplayStatus.LOG_IN);
+                break;
+        }
+    }
+
     private interface ProfileQuery {
         String[] PROJECTION = {
                 ContactsContract.CommonDataKinds.Email.ADDRESS,
@@ -359,6 +378,26 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected void onCancelled() {
             mAuthTask = null;
             showProgress(false);
+        }
+    }
+
+    private void setDisplayStatus(DisplayStatus status) {
+        displayStatus = status;
+
+        EditText et = findViewById(R.id.confirm_password);
+        Button btSwitch = findViewById(R.id.btSwitch);
+        Button btAction = findViewById(R.id.email_sign_in_button);
+        switch (displayStatus) {
+            case LOG_IN:
+                et.setVisibility(View.GONE);
+                btSwitch.setText(R.string.action_register);
+                btAction.setText(R.string.action_sign_in_short);
+                break;
+            case REGISTER:
+                et.setVisibility(View.VISIBLE);
+                btSwitch.setText(R.string.action_sign_in_short);
+                btAction.setText(R.string.action_register);
+                break;
         }
     }
 }
