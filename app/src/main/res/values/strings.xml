@@ -27,4 +27,9 @@
     <string name="location_icon">location icon</string>
     <string name="prof_pic">profile pic</string>
     <string name="inquire">Inquire</string>
+    <string name="action_post">POST</string>
+    <string name="prompt_title">Title</string>
+    <string name="prompt_price">Price</string>
+    <string name="prompt_location">Location</string>
+    <string name="prompt_description">Description</string>
 </resources>
