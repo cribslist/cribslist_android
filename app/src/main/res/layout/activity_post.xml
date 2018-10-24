@@ -40,13 +40,17 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/ivPreview"
+            <com.glide.slider.library.SliderLayout
+                android:id="@+id/slider"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:contentDescription="@string/newitemimage"
-                android:onClick="onClickImageView"
-                android:src="@drawable/ic_stroller_24dp"/>
+                app:auto_cycle="false"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onClickAdd"
+                android:text="@string/action_add"/>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"

@@ -1,8 +1,10 @@
 package com.codepath.cribslist.activities;
 
+import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -12,14 +14,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.baoyz.actionsheet.ActionSheet;
 import com.codepath.cribslist.R;
+import com.glide.slider.library.SliderLayout;
+import com.glide.slider.library.SliderTypes.DefaultSliderView;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
 
 public class PostActivity extends AppCompatActivity implements ActionSheet.ActionSheetListener {
     private static final String TITLE_TEXT = "New Item";
@@ -33,6 +41,8 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
     private String photoFileName = "photo.jpg";
     private File photoFile;
 
+    private ArrayList<Bitmap> mBitmapsSelected;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,20 +51,19 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(TITLE_TEXT);
+
+        mBitmapsSelected = new ArrayList<>();
+
+        SliderLayout slider = findViewById(R.id.slider);
+        slider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
     }
 
     // Trigger gallery selection for a photo
     private void onPickPhoto() {
-        // Create intent for picking a photo from the gallery
-        Intent intent = new Intent(Intent.ACTION_PICK,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
-        // If you call startActivityForResult() using an intent that no app can handle, your app will crash.
-        // So as long as the result is not null, it's safe to use the intent.
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            // Bring up gallery to select a photo
-            startActivityForResult(intent, PICK_PHOTO_CODE);
-        }
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_PHOTO_CODE);
     }
 
     private void onLaunchCamera() {
@@ -95,43 +104,62 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
         return file;
     }
 
+    private void addBitmapToSlider(Bitmap bitmap) {
+        SliderLayout slider = findViewById(R.id.slider);
+        DefaultSliderView sliderView = new DefaultSliderView(this);
+
+        long unixTime = System.currentTimeMillis();
+        String filePath = getFilesDir().getPath() + "/" + unixTime + ".txt";
+        File file = new File(filePath);
+        OutputStream os;
+
+        try {
+            os = new BufferedOutputStream(new FileOutputStream(file));
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+            os.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        sliderView
+                .image(file)
+                .setBackgroundColor(Color.WHITE)
+                .setProgressBarVisible(true);
+
+        slider.addSlider(sliderView);
+
+        mBitmapsSelected.add(bitmap);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 // by this point we have the camera photo on disk
                 Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
-                // RESIZE BITMAP, see section below
-                // Load the taken image into a preview
-                ImageView ivPreview = findViewById(R.id.ivPreview);
-                ivPreview.setImageBitmap(takenImage);
+                addBitmapToSlider(takenImage);
             } else { // Result was a failure
                 Toast.makeText(this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
         } else if (requestCode == PICK_PHOTO_CODE) {
-            if (data != null) {
-                Uri photoUri = data.getData();
-                // Do something with the photo based on Uri
-                Bitmap selectedImage = null;
-                try {
-                    selectedImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), photoUri);
-                } catch (IOException e) {
-                    e.printStackTrace();
+            if (data != null && data.getClipData() != null) {
+                ClipData mClipData = data.getClipData();
+                for (int i = 0; i < mClipData.getItemCount(); i++) {
+                    ClipData.Item item = mClipData.getItemAt(i);
+                    Uri uri = item.getUri();
+                    try {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+                        addBitmapToSlider(bitmap);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
-                // Load the selected image into a preview
-                ImageView ivPreview = findViewById(R.id.ivPreview);
-                ivPreview.setImageBitmap(selectedImage);
             }
         }
-    }
-
-    public void onClickImageView(View view) {
-        ActionSheet.createBuilder(this, getSupportFragmentManager())
-                .setCancelButtonTitle(CANCEL)
-                .setOtherButtonTitles(TAKE_A_PHOTO, CHOOSE_FROM_LIBRARY)
-                .setCancelableOnTouchOutside(true)
-                .setListener(this)
-                .show();
     }
 
     @Override
@@ -146,5 +174,14 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
         } else {
             onPickPhoto();
         }
+    }
+
+    public void onClickAdd(View view) {
+        ActionSheet.createBuilder(this, getSupportFragmentManager())
+                .setCancelButtonTitle(CANCEL)
+                .setOtherButtonTitles(TAKE_A_PHOTO, CHOOSE_FROM_LIBRARY)
+                .setCancelableOnTouchOutside(true)
+                .setListener(this)
+                .show();
     }
 }
