@@ -97,11 +97,13 @@
             <Button
                 android:id="@+id/email_sign_in_button"
                 style="?android:textAppearanceSmall"
+                android:background="@drawable/ic_action_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
                 android:text="@string/action_sign_in_short"
+                android:textColor="@color/colorWhite"
                 android:textStyle="bold" />
 
             <Button
@@ -109,6 +111,8 @@
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:layout_marginEnd="50dp"
                 android:text="@string/action_sign_in_short"
                 android:onClick="onClickSwitchButton"
                 android:textColor="@color/design_default_color_primary" />
