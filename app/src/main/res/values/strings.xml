@@ -34,4 +34,5 @@
     <string name="prompt_description">Description</string>
     <string name="account">Account</string>
     <string name="action_add">Add</string>
+    <string name="my_items">My items</string>
 </resources>
