@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.baoyz.actionsheet.ActionSheet;
 import com.codepath.cribslist.R;
+import com.codepath.cribslist.network.CribslistClient;
 import com.glide.slider.library.SliderLayout;
 import com.glide.slider.library.SliderTypes.DefaultSliderView;
 
@@ -94,7 +95,7 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
         File mediaStorageDir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), APP_TAG);
 
         // Create the storage directory if it does not exist
-        if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()){
+        if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()) {
             Log.d(APP_TAG, "failed to create directory");
         }
 
@@ -183,5 +184,15 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
                 .setCancelableOnTouchOutside(true)
                 .setListener(this)
                 .show();
+    }
+
+    public void onClickPostBtn(View view) {
+        CribslistClient.postImage(photoFile, new CribslistClient.PostImageDelegate() {
+            @Override
+            public void handlePostImage(String id, String path) {
+                Log.d("DEBUG", id);
+                Log.d("DEBUG", path);
+            }
+        });
     }
 }

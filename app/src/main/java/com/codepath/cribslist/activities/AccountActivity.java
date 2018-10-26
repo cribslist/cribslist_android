@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,14 +16,8 @@ import com.codepath.cribslist.adapters.ItemAdapter;
 import com.codepath.cribslist.models.Item;
 import com.codepath.cribslist.models.User;
 import com.codepath.cribslist.network.CribslistClient;
-import com.loopj.android.http.JsonHttpResponseHandler;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-
-import cz.msebera.android.httpclient.Header;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
@@ -58,37 +51,29 @@ public class AccountActivity extends AppCompatActivity {
     }
 
     private void loadAccount() {
-        CribslistClient.getAccountDetail(new JsonHttpResponseHandler() {
+        CribslistClient.getAccountDetail(new CribslistClient.GetAccountDelegate() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Log.d("DEBUG", response.toString());
-                try {
-                    user = new User(response);
-                    items.addAll(user.getItems());
-                    mAdapter.notifyDataSetChanged();
+            public void handleGetAccount(User user) {
+                items.addAll(user.getItems());
+                mAdapter.notifyDataSetChanged();
 
-                    ImageView iv = findViewById(R.id.ivProfileImage);
-                    TextView tvName = findViewById(R.id.tvName);
-                    TextView tvEmail = findViewById(R.id.tvEmail);
+                ImageView iv = findViewById(R.id.ivProfileImage);
+                TextView tvName = findViewById(R.id.tvName);
+                TextView tvEmail = findViewById(R.id.tvEmail);
 
-                    tvName.setText(user.getName());
-                    tvEmail.setText(user.getEmail());
+                tvName.setText(user.getName());
+                tvEmail.setText(user.getEmail());
 
-                    RequestOptions options = new RequestOptions()
-                            .centerCrop()
-                            .placeholder(R.drawable.ic_stroller_24dp)
-                            .error(R.drawable.ic_stroller_24dp);
+                RequestOptions options = new RequestOptions()
+                        .centerCrop()
+                        .placeholder(R.drawable.ic_stroller_24dp)
+                        .error(R.drawable.ic_stroller_24dp);
 
-                    Glide.with(AccountActivity.this)
-                            .load(user.getUserPhotoURL())
-                            .transition(withCrossFade())
-                            .apply(options)
-                            .into(iv);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                Log.d("DEBUG", user.toString());
-
+                Glide.with(AccountActivity.this)
+                        .load(user.getUserPhotoURL())
+                        .transition(withCrossFade())
+                        .apply(options)
+                        .into(iv);
             }
         });
     }
