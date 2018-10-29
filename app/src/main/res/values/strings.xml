@@ -35,4 +35,7 @@
     <string name="account">Account</string>
     <string name="action_add">Add</string>
     <string name="my_items">My items</string>
+    <string name="my_button">my button</string>
+    <string name="search_hint">Search...</string>
+    <string name="cancel">X</string>
 </resources>
