@@ -5,6 +5,7 @@
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
+        android:icon="@drawable/ic_person_grey_24dp"
         android:title="@string/account"
         app:showAsAction="always" />
 </menu>

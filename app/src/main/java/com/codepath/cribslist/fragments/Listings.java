@@ -32,10 +32,14 @@ public class Listings extends Fragment {
     int numberOfColumns = 2;
     RecyclerView mRecyclerView;
     RecyclerView.Adapter mAdapter;
+    GridLayoutManager layoutManager;
     ArrayList<Item> items = new ArrayList<>();
     private static final String LISTING_TYPE = "LISTING_TYPE";
     private int listingType;
     private EndlessRecyclerViewScrollListener scrollListener;
+    private String searchQuery = "";
+    private int currentPage = 0;
+    private String fragmentRoute;
 
     public Listings() {
         // Required empty public constructor
@@ -63,21 +67,12 @@ public class Listings extends Fragment {
         View v = inflater.inflate(R.layout.fragment_listings, container, false);
         mRecyclerView = v.findViewById(R.id.items);
 
-        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), numberOfColumns);
+        layoutManager = new GridLayoutManager(getContext(), numberOfColumns);
         mRecyclerView.setLayoutManager(layoutManager);
         mAdapter = new ItemAdapter(items);
         mRecyclerView.setAdapter(mAdapter);
-        loadNextDataFromApi(getRouteForType(listingType), -1);
-
-        scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                // todo: implement endless scrolling with API
-                //loadNextDataFromApi(page);
-            }
-        };
-        mRecyclerView.addOnScrollListener(scrollListener);
-
+        fragmentRoute = getRouteForType(listingType);
+        search();
         return v;
     }
 
@@ -86,6 +81,20 @@ public class Listings extends Fragment {
         items.addAll(Item.fromJSONArray(response));
         mAdapter.notifyDataSetChanged();
     }
+
+    public void search(){
+        loadNextDataFromApi(fragmentRoute, currentPage);
+        scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                currentPage = currentPage + 1;
+                loadNextDataFromApi(fragmentRoute, currentPage);
+            }
+        };
+        mRecyclerView.addOnScrollListener(scrollListener);
+    }
+
+
 
     public String getRouteForType(int type){
         switch(type){
@@ -101,7 +110,7 @@ public class Listings extends Fragment {
 
     public void loadNextDataFromApi(String route, int page){
         AsyncHttpClient client = new AsyncHttpClient();
-        RequestParams params = getRequestParams(page);
+        RequestParams params = getRequestParams(currentPage);
         client.get(route, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
@@ -117,18 +126,21 @@ public class Listings extends Fragment {
         });
     }
 
-    public RequestParams getRequestParams(int page){
-        RequestParams params = new RequestParams();
-        // todo add this functionality later
-        if(page == -1){
-            return params;
-        }
-        // todo: pass last id,  faster mongo query would be:
-        // users = Users.find({'_id'> last_id}).limit(10);
-        params.put(API_PARAM.COUNT, 10);
-        params.put(API_PARAM.PAGE, page);
-        return params;
+    public void setQueryAndSearch(String query){
+        searchQuery = query;
+        items.clear();
+        currentPage = 0;
+        search();
     }
 
+    public RequestParams getRequestParams(int page){
+        RequestParams params = new RequestParams();
+        params.put(API_PARAM.COUNT, 2);
+        params.put(API_PARAM.PAGE, page);
+        if(listingType == 0 && !"".equals(searchQuery)){
+            params.put(API_PARAM.QUERY, searchQuery);
+        }
+        return params;
+    }
 
 }

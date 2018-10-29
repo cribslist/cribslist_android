@@ -58,4 +58,5 @@ dependencies {
         transitive = true
     }
     implementation 'com.baoyz.actionsheet:library:1.1.7'
+    implementation 'jp.wasabeef:blurry:2.1.1'
 }

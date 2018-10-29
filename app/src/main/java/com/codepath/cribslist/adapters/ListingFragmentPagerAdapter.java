@@ -3,11 +3,10 @@ package com.codepath.cribslist.adapters;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 
 import com.codepath.cribslist.fragments.Listings;
 
-public class ListingFragmentPagerAdapter extends FragmentPagerAdapter {
+public class ListingFragmentPagerAdapter extends SmartFragmentStatePagerAdapter {
     final int PAGE_COUNT = 2;
     private String tabTitles[] = new String[] { "All Listings", "My Items" };
     private Context context;
