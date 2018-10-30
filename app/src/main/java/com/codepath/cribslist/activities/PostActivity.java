@@ -14,10 +14,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.baoyz.actionsheet.ActionSheet;
 import com.codepath.cribslist.R;
+import com.codepath.cribslist.helper.DispatchGroup;
+import com.codepath.cribslist.models.Item;
 import com.codepath.cribslist.network.CribslistClient;
 import com.glide.slider.library.SliderLayout;
 import com.glide.slider.library.SliderTypes.DefaultSliderView;
@@ -28,7 +31,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class PostActivity extends AppCompatActivity implements ActionSheet.ActionSheetListener {
     private static final String TITLE_TEXT = "New Item";
@@ -42,7 +48,7 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
     private String photoFileName = "photo.jpg";
     private File photoFile;
 
-    private ArrayList<Bitmap> mBitmapsSelected;
+    private ArrayList<File> mImages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +59,7 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(TITLE_TEXT);
 
-        mBitmapsSelected = new ArrayList<>();
+        mImages = new ArrayList<>();
 
         SliderLayout slider = findViewById(R.id.slider);
         slider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
@@ -131,7 +137,7 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
 
         slider.addSlider(sliderView);
 
-        mBitmapsSelected.add(bitmap);
+        mImages.add(file);
     }
 
     @Override
@@ -187,11 +193,64 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
     }
 
     public void onClickPostBtn(View view) {
-        CribslistClient.postImage(photoFile, new CribslistClient.PostImageDelegate() {
+        postImages();
+    }
+
+    // MARK: Service call
+
+    private void postImages() {
+        final DispatchGroup group = new DispatchGroup();
+        final ArrayList<String> paths = new ArrayList<>();
+
+        for (File file: mImages) {
+            group.enter();
+            CribslistClient.postImage(file, new CribslistClient.PostImageDelegate() {
+                @Override
+                public void handlePostImage(String path) {
+                    Log.d("DEBUG_", path);
+                    paths.add(path);
+                    group.leave();
+                }
+            });
+        }
+
+        group.notify(new Runnable() {
             @Override
-            public void handlePostImage(String id, String path) {
-                Log.d("DEBUG", id);
-                Log.d("DEBUG", path);
+            public void run() {
+                postItem(paths);
+            }
+        });
+    }
+
+    private void postItem(ArrayList<String> paths) {
+        EditText etTitle = findViewById(R.id.etTitle);
+        EditText etPrice = findViewById(R.id.etPrice);
+        EditText etLocation = findViewById(R.id.etLocation);
+        EditText etDescription = findViewById(R.id.etDescription);
+
+        String title = etTitle.getText().toString();
+        int price = 0;
+        try {
+            price = Integer.parseInt(etPrice.getText().toString());
+        } catch(NumberFormatException nfe) {
+            System.out.println("Could not parse " + nfe);
+        }
+        String description = etDescription.getText().toString();
+        String location = etLocation.getText().toString();
+
+        Date now = Calendar.getInstance().getTime();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        String nowString = simpleDateFormat.format(now);
+
+        final Item item = new Item(title, price, description,
+                null/*Long.parseLong("1540263890986")*/, location, 0, 0,
+                nowString, null, null, paths);
+
+        CribslistClient.postItem(item, new CribslistClient.PostItemDelegate() {
+            @Override
+            public void handlePostItem() {
+                Log.d("DEBUG_", item.getTitle() + "posted");
+                finish();
             }
         });
     }
