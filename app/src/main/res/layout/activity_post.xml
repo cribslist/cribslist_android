@@ -113,14 +113,15 @@
             </android.support.design.widget.TextInputLayout>
 
             <Button
-                android:id="@+id/email_sign_in_button"
+                android:id="@+id/btn_post"
                 style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"
                 android:layout_marginBottom="16dp"
-                android:text="@string/action_post"
                 android:background="@drawable/ic_action_button"
+                android:text="@string/action_post"
+                android:onClick="onClickPostBtn"
                 android:textColor="@color/colorWhite"
                 android:textStyle="bold" />
         </LinearLayout>
