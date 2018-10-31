@@ -160,10 +160,10 @@ public class Item implements Parcelable {
         this.latitude = in.readDouble();
         this.longitude = in.readDouble();
         this.created = in.readString();
+        this.category = new ArrayList<>();
         in.readList(this.category, Integer.class.getClassLoader());
         this.thumbnailURL = in.readString();
         in.readStringList(photoURLs);
-
     }
 
     public void setLocationName(String locationName) {
