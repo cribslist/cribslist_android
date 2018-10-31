@@ -61,13 +61,13 @@ public class CribslistClient {
 
         RequestParams params = new RequestParams();
         params.setForceMultipartEntityContentType(true);
+
         try {
-            params.put("file", image);
+            params.put("file", image, "image/jpg");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
         AsyncHttpClient client = new AsyncHttpClient();
-
         client.post(apiUrl, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -119,11 +119,11 @@ public class CribslistClient {
         params.put("description", item.getDescription());
         params.put("seller", ACCOUNT_ID);
         params.put("location", item.getLocation());
+
 //        params.put("latitude", item.getLatitude());
 //        params.put("longitude", item.getLongitude());
 //        params.put("created", item.getCreated());
-        params.put("category", item.getCategory().toString());
-
+//        params.put("category", item.getCategory().toString());
         ArrayList<String> urls = item.getPhotoURLs();
         if (urls.size() > 0) {
             String urlString = "[";
@@ -137,7 +137,7 @@ public class CribslistClient {
         }
 
         params.put("thumbnail_url", item.getThumbnailURL());
-
+        params.setForceMultipartEntityContentType(true);
         AsyncHttpClient client = new AsyncHttpClient();
         client.post(apiUrl, params, new JsonHttpResponseHandler() {
             @Override
