@@ -1,7 +1,10 @@
 package com.codepath.cribslist.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,15 +46,18 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION) {
                 Item item = mDataset.get(position);
+                String idString =  String.valueOf(item.getUid());
+                ViewCompat.setTransitionName(mThumbnail, idString);
                 Intent i = new Intent(context, ItemDetail.class);
+                ActivityOptionsCompat options = ActivityOptionsCompat.
+                        makeSceneTransitionAnimation((Activity)context,(View)mThumbnail, idString);
                 i.putExtra("item", item);
-                context.startActivity(i);
+                context.startActivity(i, options.toBundle());
             }
         }
     }
 
-    public ItemAdapter(ArrayList<Item> myDataset) {
-        mDataset = myDataset;
+    public ItemAdapter(ArrayList<Item> myDataset) { mDataset = myDataset;
     }
 
     @Override
