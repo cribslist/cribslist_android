@@ -156,7 +156,7 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
         DefaultSliderView sliderView = new DefaultSliderView(this);
 
         long unixTime = System.currentTimeMillis();
-        String filePath = getFilesDir().getPath() + "/" + unixTime + ".txt";
+        String filePath = getFilesDir().getPath() + "/" + unixTime + ".jpg";
         File file = new File(filePath);
         OutputStream os;
 
@@ -289,7 +289,7 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
         CribslistClient.postItem(item, new CribslistClient.PostItemDelegate() {
             @Override
             public void handlePostItem() {
-                Log.d("DEBUG", "successsfully posted");
+                Log.d("DEBUG", "successfully posted");
                 finish();
             }
         });
