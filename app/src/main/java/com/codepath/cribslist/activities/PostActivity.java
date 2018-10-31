@@ -14,16 +14,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.baoyz.actionsheet.ActionSheet;
 import com.codepath.cribslist.R;
+import com.codepath.cribslist.constants.ItemCategory;
 import com.codepath.cribslist.helper.DispatchGroup;
 import com.codepath.cribslist.models.Item;
 import com.codepath.cribslist.network.CribslistClient;
 import com.glide.slider.library.SliderLayout;
 import com.glide.slider.library.SliderTypes.DefaultSliderView;
+import com.thomashaertel.widget.MultiSpinner;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -35,6 +38,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 public class PostActivity extends AppCompatActivity implements ActionSheet.ActionSheetListener {
     private static final String TITLE_TEXT = "New Item";
@@ -49,6 +54,7 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
     private File photoFile;
 
     private ArrayList<File> mImages;
+    private ArrayList<Integer> mCategory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,9 +66,43 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
         getSupportActionBar().setTitle(TITLE_TEXT);
 
         mImages = new ArrayList<>();
+        mCategory = new ArrayList<>();
 
         SliderLayout slider = findViewById(R.id.slider);
         slider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
+
+        setupSpinner();
+    }
+
+    private void setupSpinner() {
+        ArrayAdapter<String> mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
+        mAdapter.addAll(ItemCategory.getArray());
+
+        MultiSpinner mSpinner = findViewById(R.id.spinnerMulti);
+        mSpinner.setAdapter(mAdapter, false, new MultiSpinner.MultiSpinnerListener() {
+            @Override
+            public void onItemsSelected(boolean[] selected) {
+                ArrayList<Integer> category = mCategory;
+                for (int i = 0; i < selected.length; i++) {
+                    boolean isSelected = selected[i];
+                    if (isSelected == true) {
+                        category.add(i);
+                    } else {
+                        category.remove(Integer.valueOf(i));
+                    }
+                }
+
+                Set<Integer> hs = new HashSet<>();
+                hs.addAll(category);
+                category.clear();
+                category.addAll(hs);
+
+                mCategory = category;
+            }
+        });
+
+        boolean[] selectedItems = new boolean[mAdapter.getCount()];
+        mSpinner.setSelected(selectedItems);
     }
 
     // Trigger gallery selection for a photo
@@ -243,13 +283,13 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
         String nowString = simpleDateFormat.format(now);
 
         final Item item = new Item(title, price, description,
-                null/*Long.parseLong("1540263890986")*/, location, 0, 0,
-                nowString, null, null, paths);
+                null, location, 0, 0,
+                nowString, mCategory, null, paths);
 
         CribslistClient.postItem(item, new CribslistClient.PostItemDelegate() {
             @Override
             public void handlePostItem() {
-                Log.d("DEBUG_", item.getTitle() + "posted");
+                Log.d("DEBUG", "successsfully posted");
                 finish();
             }
         });

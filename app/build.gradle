@@ -59,4 +59,5 @@ dependencies {
     }
     implementation 'com.baoyz.actionsheet:library:1.1.7'
     implementation 'jp.wasabeef:blurry:2.1.1'
+    implementation 'com.github.thomashaertel:MultiSpinner:f20df367fb'
 }
