@@ -3,7 +3,6 @@ package com.codepath.cribslist.activities;
 import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,16 +13,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.baoyz.actionsheet.ActionSheet;
 import com.codepath.cribslist.R;
+import com.codepath.cribslist.constants.ItemCategory;
 import com.codepath.cribslist.helper.DispatchGroup;
 import com.codepath.cribslist.models.Item;
 import com.codepath.cribslist.network.CribslistClient;
 import com.glide.slider.library.SliderLayout;
 import com.glide.slider.library.SliderTypes.DefaultSliderView;
+import com.thomashaertel.widget.MultiSpinner;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -35,6 +37,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 public class PostActivity extends AppCompatActivity implements ActionSheet.ActionSheetListener {
     private static final String TITLE_TEXT = "New Item";
@@ -48,7 +53,10 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
     private String photoFileName = "photo.jpg";
     private File photoFile;
 
+    SliderLayout mSlider;
+
     private ArrayList<File> mImages;
+    private ArrayList<Integer> mCategory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,9 +68,43 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
         getSupportActionBar().setTitle(TITLE_TEXT);
 
         mImages = new ArrayList<>();
+        mCategory = new ArrayList<>();
 
-        SliderLayout slider = findViewById(R.id.slider);
-        slider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
+        mSlider = findViewById(R.id.slider);
+        mSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
+
+        setupSpinner();
+    }
+
+    private void setupSpinner() {
+        ArrayAdapter<String> mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
+        mAdapter.addAll(ItemCategory.getArray());
+
+        MultiSpinner mSpinner = findViewById(R.id.spinnerMulti);
+        mSpinner.setAdapter(mAdapter, false, new MultiSpinner.MultiSpinnerListener() {
+            @Override
+            public void onItemsSelected(boolean[] selected) {
+                ArrayList<Integer> category = mCategory;
+                for (int i = 0; i < selected.length; i++) {
+                    boolean isSelected = selected[i];
+                    if (isSelected == true) {
+                        category.add(i);
+                    } else {
+                        category.remove(Integer.valueOf(i));
+                    }
+                }
+
+                Set<Integer> hs = new HashSet<>();
+                hs.addAll(category);
+                category.clear();
+                category.addAll(hs);
+
+                mCategory = category;
+            }
+        });
+
+        boolean[] selectedItems = new boolean[mAdapter.getCount()];
+        mSpinner.setSelected(selectedItems);
     }
 
     // Trigger gallery selection for a photo
@@ -111,33 +153,9 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
         return file;
     }
 
-    private void addBitmapToSlider(Bitmap bitmap) {
-        SliderLayout slider = findViewById(R.id.slider);
-        DefaultSliderView sliderView = new DefaultSliderView(this);
-
-        long unixTime = System.currentTimeMillis();
-        String filePath = getFilesDir().getPath() + "/" + unixTime + ".txt";
-        File file = new File(filePath);
-        OutputStream os;
-
-        try {
-            os = new BufferedOutputStream(new FileOutputStream(file));
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
-            os.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        sliderView
-                .image(file)
-                .setBackgroundColor(Color.WHITE)
-                .setProgressBarVisible(true);
-
-        slider.addSlider(sliderView);
-
-        mImages.add(file);
+    private void removeAllImagesFromSlider() {
+        mSlider.removeAllSliders();
+        mImages.clear();
     }
 
     @Override
@@ -145,27 +163,44 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 // by this point we have the camera photo on disk
-                Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
-                addBitmapToSlider(takenImage);
+                mImages.add(photoFile);
             } else { // Result was a failure
                 Toast.makeText(this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
-        } else if (requestCode == PICK_PHOTO_CODE) {
-            if (data != null && data.getClipData() != null) {
-                ClipData mClipData = data.getClipData();
-                for (int i = 0; i < mClipData.getItemCount(); i++) {
-                    ClipData.Item item = mClipData.getItemAt(i);
-                    Uri uri = item.getUri();
-                    try {
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
-                        addBitmapToSlider(bitmap);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+        } else if (requestCode == PICK_PHOTO_CODE &&
+                data != null &&
+                data.getClipData() != null) {
+            ClipData mClipData = data.getClipData();
+            for (int i = 0; i < mClipData.getItemCount(); i++) {
+                ClipData.Item item = mClipData.getItemAt(i);
+                Uri uri = item.getUri();
+                File file = null;
+                try {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+                    String uuid = UUID.randomUUID().toString();
+                    String filePath = getFilesDir().getPath() + "/" + uuid + ".jpg";
+                    file = new File(filePath);
+                    OutputStream os = new BufferedOutputStream(new FileOutputStream(file));;
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+                    os.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+                mImages.add(file);
             }
+        }
+
+        mSlider.removeAllSliders();
+
+        for (File image: mImages) {
+            DefaultSliderView sliderView = new DefaultSliderView(this);
+            sliderView
+                    .image(image)
+                    .setBackgroundColor(Color.WHITE)
+                    .setProgressBarVisible(true);
+            mSlider.addSlider(sliderView);
         }
     }
 
@@ -194,6 +229,10 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
 
     public void onClickPostBtn(View view) {
         postImages();
+    }
+
+    public void onClickRemove(View view) {
+        removeAllImagesFromSlider();
     }
 
     // MARK: Service call
@@ -243,13 +282,13 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
         String nowString = simpleDateFormat.format(now);
 
         final Item item = new Item(title, price, description,
-                null/*Long.parseLong("1540263890986")*/, location, 0, 0,
-                nowString, null, null, paths);
+                null, location, 0, 0,
+                nowString, mCategory, null, paths);
 
         CribslistClient.postItem(item, new CribslistClient.PostItemDelegate() {
             @Override
             public void handlePostItem() {
-                Log.d("DEBUG_", item.getTitle() + "posted");
+                Log.d("DEBUG", "successfully posted");
                 finish();
             }
         });

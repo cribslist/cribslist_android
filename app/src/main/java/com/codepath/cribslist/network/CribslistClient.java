@@ -119,11 +119,10 @@ public class CribslistClient {
         params.put("description", item.getDescription());
         params.put("seller", ACCOUNT_ID);
         params.put("location", item.getLocation());
-
 //        params.put("latitude", item.getLatitude());
 //        params.put("longitude", item.getLongitude());
-//        params.put("created", item.getCreated());
-//        params.put("category", item.getCategory().toString());
+        params.put("created", item.getCreated());
+        params.put("category", item.getCategory().toString());
         ArrayList<String> urls = item.getPhotoURLs();
         if (urls.size() > 0) {
             String urlString = "[";
