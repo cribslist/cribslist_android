@@ -121,17 +121,17 @@ public class Item implements Parcelable {
 
     public static ArrayList<Item> fromJSONArray(JSONArray array) {
         ArrayList<Item> results = new ArrayList<>();
-        try {
+
             for (int i = 0; i < array.length(); i++){
+                try {
                 JSONObject obj = array.getJSONObject(i);
                 Item itm = new Item(obj);
                 results.add(itm);
+                } catch (JSONException e){
+                    e.printStackTrace();
+                }
             }
             return results;
-        } catch (JSONException e){
-            e.printStackTrace();
-        }
-        return results;
     }
 
     @Override
