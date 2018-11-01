@@ -30,6 +30,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.codepath.cribslist.R;
+import com.codepath.cribslist.helper.SharedPref;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,6 +78,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        SharedPref.init(getApplicationContext());
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(TITLE_TEXT);
@@ -110,7 +113,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         setDisplayStatus(DisplayStatus.LOG_IN);
 
-        launchMainActivity();
+        if (SharedPref.getInstance().getEmail().isEmpty() == false) {
+            launchMainActivity();
+        }
     }
 
     private void populateAutoComplete() {
@@ -367,6 +372,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
+                String email = mEmailView.getText().toString();
+                String userId = "1540263890986";
+                SharedPref.getInstance().setEmail(email);
+                SharedPref.getInstance().setUserId(userId);
                 launchMainActivity();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));

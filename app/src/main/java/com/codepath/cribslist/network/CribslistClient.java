@@ -2,6 +2,7 @@ package com.codepath.cribslist.network;
 
 import android.util.Log;
 
+import com.codepath.cribslist.helper.SharedPref;
 import com.codepath.cribslist.models.Item;
 import com.codepath.cribslist.models.User;
 import com.loopj.android.http.AsyncHttpClient;
@@ -32,10 +33,9 @@ public class CribslistClient {
     }
 
     public static final String BASE_URL = "https://cribslist.herokuapp.com/";
-    public static final String ACCOUNT_ID = "1540263890986";
 
     public static void getAccountDetail(final GetAccountDelegate delegate) {
-        String apiUrl = BASE_URL + "account/" + ACCOUNT_ID;
+        String apiUrl = BASE_URL + "account/" + SharedPref.getInstance().getUserId();
 
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(apiUrl, null, new JsonHttpResponseHandler() {
@@ -117,7 +117,7 @@ public class CribslistClient {
         params.put("title", item.getTitle());
         params.put("price", item.getPrice());
         params.put("description", item.getDescription());
-        params.put("seller", ACCOUNT_ID);
+        params.put("seller", SharedPref.getInstance().getUserId());
         params.put("location", item.getLocation());
 //        params.put("latitude", item.getLatitude());
 //        params.put("longitude", item.getLongitude());
