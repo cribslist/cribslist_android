@@ -39,4 +39,5 @@
     <string name="search_hint">Search...</string>
     <string name="cancel">X</string>
     <string name="select_category">Select Category</string>
+    <string name="action_remove_all">Remove All</string>
 </resources>
