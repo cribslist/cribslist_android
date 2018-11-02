@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baoyz.actionsheet.ActionSheet;
@@ -22,9 +23,15 @@ import com.codepath.cribslist.R;
 import com.codepath.cribslist.constants.ItemCategory;
 import com.codepath.cribslist.helper.DispatchGroup;
 import com.codepath.cribslist.models.Item;
+import com.codepath.cribslist.models.LatLng;
 import com.codepath.cribslist.network.CribslistClient;
 import com.glide.slider.library.SliderLayout;
 import com.glide.slider.library.SliderTypes.DefaultSliderView;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.thomashaertel.widget.MultiSpinner;
 
 import java.io.BufferedOutputStream;
@@ -52,16 +59,26 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
     public final static int PICK_PHOTO_CODE = 1046;
     private String photoFileName = "photo.jpg";
     private File photoFile;
+    private final static int REQUEST_FINE_LOCATION = 10;
+    private final static int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
 
     SliderLayout mSlider;
+    EditText etTitle;
+    EditText etPrice;
+    TextView tvLocation;
+    EditText etDescription;
+    MultiSpinner mSpinner;
 
     private ArrayList<File> mImages;
     private ArrayList<Integer> mCategory;
+    private LatLng mLatLng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
+
+        setupViews();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -69,18 +86,26 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
 
         mImages = new ArrayList<>();
         mCategory = new ArrayList<>();
-
-        mSlider = findViewById(R.id.slider);
         mSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
 
+        mLatLng = new LatLng(37.7749,-122.4194);
+
         setupSpinner();
+    }
+
+    private void setupViews() {
+        etTitle = findViewById(R.id.etTitle);
+        etPrice = findViewById(R.id.etPrice);
+        tvLocation = findViewById(R.id.tvLocation);
+        etDescription = findViewById(R.id.etDescription);
+        mSlider = findViewById(R.id.slider);
+        mSpinner = findViewById(R.id.spinnerMulti);
     }
 
     private void setupSpinner() {
         ArrayAdapter<String> mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
         mAdapter.addAll(ItemCategory.getArray());
 
-        MultiSpinner mSpinner = findViewById(R.id.spinnerMulti);
         mSpinner.setAdapter(mAdapter, false, new MultiSpinner.MultiSpinnerListener() {
             @Override
             public void onItemsSelected(boolean[] selected) {
@@ -167,6 +192,7 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
             } else { // Result was a failure
                 Toast.makeText(this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
+            updateSlider();
         } else if (requestCode == PICK_PHOTO_CODE &&
                 data != null &&
                 data.getClipData() != null) {
@@ -190,8 +216,25 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
                 }
                 mImages.add(file);
             }
+            updateSlider();
+        } else if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlaceAutocomplete.getPlace(this, data);
+                String name = place.getName().toString();
+                tvLocation.setText(name);
+                mLatLng.lat = place.getLatLng().latitude;
+                mLatLng.lon = place.getLatLng().longitude;
+            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                Status status = PlaceAutocomplete.getStatus(this, data);
+                // TODO: Handle the error.
+                Log.i("DEBUG", status.getStatusMessage());
+            } else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
+            }
         }
+    }
 
+    private void updateSlider() {
         mSlider.removeAllSliders();
 
         for (File image: mImages) {
@@ -203,7 +246,6 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
             mSlider.addSlider(sliderView);
         }
     }
-
     @Override
     public void onDismiss(ActionSheet actionSheet, boolean isCancel) {
 
@@ -262,11 +304,6 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
     }
 
     private void postItem(ArrayList<String> paths) {
-        EditText etTitle = findViewById(R.id.etTitle);
-        EditText etPrice = findViewById(R.id.etPrice);
-        EditText etLocation = findViewById(R.id.etLocation);
-        EditText etDescription = findViewById(R.id.etDescription);
-
         String title = etTitle.getText().toString();
         int price = 0;
         try {
@@ -275,14 +312,14 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
             System.out.println("Could not parse " + nfe);
         }
         String description = etDescription.getText().toString();
-        String location = etLocation.getText().toString();
+        String location = tvLocation.getText().toString();
 
         Date now = Calendar.getInstance().getTime();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         String nowString = simpleDateFormat.format(now);
 
         final Item item = new Item(title, price, description,
-                null, location, 0, 0,
+                null, location, mLatLng.lat, mLatLng.lon,
                 nowString, mCategory, null, paths);
 
         CribslistClient.postItem(item, new CribslistClient.PostItemDelegate() {
@@ -292,5 +329,19 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
                 finish();
             }
         });
+    }
+
+    public void onClickLocation(View view) {
+        try {
+            Intent intent =
+                    new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
+                            .build(this);
+            startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
+        } catch (GooglePlayServicesRepairableException e) {
+            // TODO: Handle the error.
+        } catch (GooglePlayServicesNotAvailableException e) {
+            // TODO: Handle the error.
+        }
+
     }
 }

@@ -11,7 +11,6 @@ public class User {
     private String name;
     private String email;
     private String location;
-    private String description;
     private double rating;
     private ArrayList<Item> items;
     private String userPhotoURL;
@@ -32,10 +31,6 @@ public class User {
         return location;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     public double getRating() {
         return rating;
     }
@@ -53,7 +48,6 @@ public class User {
         this.name = jsonObject.getString("name");
         this.email = jsonObject.getString("email");
         this.location = jsonObject.getString("location");
-        this.description= jsonObject.getString("description");
         this.rating = jsonObject.getDouble("rating");
         this.userPhotoURL = jsonObject.getString("user_photo_url");
         JSONArray jsonArray = jsonObject.getJSONArray("items");
