@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -25,6 +26,7 @@ import com.codepath.cribslist.R;
 import com.codepath.cribslist.adapters.ListingFragmentPagerAdapter;
 import com.codepath.cribslist.animations.VerticalFlipTransformation;
 import com.codepath.cribslist.fragments.Listings;
+import com.codepath.cribslist.models.Item;
 import com.crashlytics.android.Crashlytics;
 
 import io.fabric.sdk.android.Fabric;
@@ -41,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
     ListingFragmentPagerAdapter adapter;
     Listings listingFragment;
     private static final String LISTINGS_FRAGMENT = "LISTINGS_FRAGMENT";
+    private static final int POST_ACTIVITY_REQUEST_CODE = 8000;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -164,6 +168,15 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == POST_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+            Item item = data.getParcelableExtra("item");
+            Listings myItems = (Listings) adapter.getRegisteredFragment(1);
+            myItems.addItem(item);
+        }
+    }
+
     private void launchAccountActivity() {
         Intent i = new Intent(this, AccountActivity.class);
         startActivity(i);
@@ -171,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void launchPostActivity() {
         Intent i = new Intent(this, PostActivity.class);
-        startActivity(i);
+        startActivityForResult(i,POST_ACTIVITY_REQUEST_CODE);
     }
 
     public void hideSearchBar(View v){

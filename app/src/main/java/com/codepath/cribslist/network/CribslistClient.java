@@ -152,10 +152,10 @@ public class CribslistClient {
         params.put("title", item.getTitle());
         params.put("price", item.getPrice());
         params.put("description", item.getDescription());
-        params.put("seller", SharedPref.getInstance().getUserId());
+        params.put("seller", item.getSellerID());
         params.put("location", item.getLocation());
-//        params.put("latitude", item.getLatitude());
-//        params.put("longitude", item.getLongitude());
+        params.put("latitude", item.getLatitude());
+        params.put("longitude", item.getLongitude());
         params.put("created", item.getCreated());
         params.put("category", item.getCategory().toString());
         ArrayList<String> urls = item.getPhotoURLs();
