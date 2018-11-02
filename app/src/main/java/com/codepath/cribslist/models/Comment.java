@@ -40,6 +40,10 @@ public class Comment {
     private String username;
     private String text;
     private long thread_id;
+    public Comment(String username, String text){
+        this.username = username;
+        this.text = text;
+    }
     public Comment(JSONObject jsonObject) throws JSONException {
         this.comment_id = jsonObject.getString(COMMENT_FIELD.COMMENT_ID);
         this.user_id = jsonObject.getLong(COMMENT_FIELD.USER_ID);

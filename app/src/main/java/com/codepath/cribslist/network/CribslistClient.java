@@ -3,6 +3,7 @@ package com.codepath.cribslist.network;
 import android.util.Log;
 
 import com.codepath.cribslist.helper.SharedPref;
+import com.codepath.cribslist.models.Comment;
 import com.codepath.cribslist.models.Item;
 import com.codepath.cribslist.models.User;
 import com.loopj.android.http.AsyncHttpClient;
@@ -30,6 +31,10 @@ public class CribslistClient {
 
     public interface PostItemDelegate {
         void handlePostItem();
+    }
+
+    public interface GetComments {
+        void handleGetComments(ArrayList<Comment> comments);
     }
 
     public static final String BASE_URL = "https://cribslist.herokuapp.com/";
@@ -182,6 +187,44 @@ public class CribslistClient {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 super.onSuccess(statusCode, headers, response);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                throw new AssertionError(responseString);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+            }
+        });
+    }
+
+    public static void getCommentsForId(String threadId, final GetComments getComments){
+        ArrayList<Comment> comments = new ArrayList<>();
+        AsyncHttpClient client = new AsyncHttpClient();
+        String url = BASE_URL + "/comments/" + threadId;
+        client.get(url, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                super.onSuccess(statusCode, headers, responseString);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                super.onSuccess(statusCode, headers, response);
+                getComments.handleGetComments(Comment.fromJSONArray(response));
             }
 
             @Override

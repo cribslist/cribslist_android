@@ -7,13 +7,19 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.transition.ChangeBounds;
 import android.transition.Fade;
 import android.util.DisplayMetrics;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,12 +45,49 @@ import jp.wasabeef.blurry.Blurry;
 public class ItemDetail extends AppCompatActivity {
     private SliderLayout mSlider;
     ImageView bgImage;
+    private DrawerLayout mDrawer;
+    private Button inquire;
+    private ImageView blurry;
+    private View base;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_detail);
+        inquire = findViewById(R.id.inquire);
+        blurry = findViewById(R.id.blurry);
+        base = findViewById(R.id.base);
         Intent i = getIntent();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        mDrawer = findViewById(R.id.drawer_layout);
+        mDrawer.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(@NonNull View view, float v) {
+
+            }
+
+            @Override
+            public void onDrawerOpened(@NonNull View view) {
+
+            }
+
+            @Override
+            public void onDrawerClosed(@NonNull View view) {
+                closeDrawer();
+            }
+
+            @Override
+            public void onDrawerStateChanged(int i) {
+
+            }
+        });
+        mDrawer.setScrimColor(getResources().getColor(android.R.color.transparent));
+        inquire.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDrawer();
+            }
+        });
+
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
         if(ab != null){
@@ -63,14 +106,14 @@ public class ItemDetail extends AppCompatActivity {
             getWindow().setExitTransition(fade);
         }
         ChangeBounds bounds = new ChangeBounds();
-        bounds.setDuration(250);
+        bounds.setDuration(200);
         bounds.setInterpolator(new AccelerateDecelerateInterpolator());
         getWindow().setSharedElementEnterTransition(bounds);
         Item item = i.getParcelableExtra("item");
         long uid = item.getUid();
         loadItemDetail(uid);
         mSlider = findViewById(R.id.slider);
-        mSlider.setTransitionName(String.valueOf(uid));
+//        mSlider.setTransitionName(String.valueOf(uid));
         setViewText(R.id.location_text, item.getLocation());
         setViewText(R.id.title, item.getTitle());
         setViewText(R.id.description, item.getDescription());
@@ -79,6 +122,21 @@ public class ItemDetail extends AppCompatActivity {
         bgImage = findViewById(R.id.bgImg);
         Bitmap bg = getBgBitmap(getResources().getDrawable(R.drawable.bg));
         Blurry.with(ItemDetail.this).radius(50).animate(1000).from(bg).into(bgImage);
+    }
+
+    private void openDrawer(){
+        blurry.setVisibility(View.VISIBLE);
+        Blurry.with(ItemDetail.this)
+                .radius(30)
+                .capture(mDrawer)
+                .into(blurry);
+        mSlider.stopAutoCycle();
+        mDrawer.openDrawer(GravityCompat.END);
+    }
+
+    private void closeDrawer(){
+        blurry.setVisibility(View.GONE);
+        mSlider.startAutoCycle();
     }
 
     @Override
@@ -146,4 +204,13 @@ public class ItemDetail extends AppCompatActivity {
         });
     }
 
+
+    public void showComments(MenuItem item) {
+        Intent intent = new Intent(ItemDetail.this, Comments.class);
+        intent.putExtra("thread_id", "1234");
+        startActivity(intent);
+    }
+
+    public void writeEmail(MenuItem item) {
+    }
 }
