@@ -1,21 +1,13 @@
 package com.codepath.cribslist.activities;
 
-import android.Manifest;
 import android.content.ClipData;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -35,10 +27,11 @@ import com.codepath.cribslist.models.LatLng;
 import com.codepath.cribslist.network.CribslistClient;
 import com.glide.slider.library.SliderLayout;
 import com.glide.slider.library.SliderTypes.DefaultSliderView;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.thomashaertel.widget.MultiSpinner;
 
 import java.io.BufferedOutputStream;
@@ -52,8 +45,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
@@ -69,6 +60,7 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
     private String photoFileName = "photo.jpg";
     private File photoFile;
     private final static int REQUEST_FINE_LOCATION = 10;
+    private final static int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
 
     SliderLayout mSlider;
     EditText etTitle;
@@ -99,7 +91,6 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
         mLatLng = new LatLng(37.7749,-122.4194);
 
         setupSpinner();
-        getUserLocation();
     }
 
     private void setupViews() {
@@ -201,6 +192,7 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
             } else { // Result was a failure
                 Toast.makeText(this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
+            updateSlider();
         } else if (requestCode == PICK_PHOTO_CODE &&
                 data != null &&
                 data.getClipData() != null) {
@@ -224,8 +216,25 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
                 }
                 mImages.add(file);
             }
+            updateSlider();
+        } else if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlaceAutocomplete.getPlace(this, data);
+                String name = place.getName().toString();
+                tvLocation.setText(name);
+                mLatLng.lat = place.getLatLng().latitude;
+                mLatLng.lon = place.getLatLng().longitude;
+            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                Status status = PlaceAutocomplete.getStatus(this, data);
+                // TODO: Handle the error.
+                Log.i("DEBUG", status.getStatusMessage());
+            } else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
+            }
         }
+    }
 
+    private void updateSlider() {
         mSlider.removeAllSliders();
 
         for (File image: mImages) {
@@ -237,7 +246,6 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
             mSlider.addSlider(sliderView);
         }
     }
-
     @Override
     public void onDismiss(ActionSheet actionSheet, boolean isCancel) {
 
@@ -267,85 +275,6 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
 
     public void onClickRemove(View view) {
         removeAllImagesFromSlider();
-    }
-
-    // MARK: Location
-
-    private void getUserLocation() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            FusedLocationProviderClient locationClient = LocationServices.getFusedLocationProviderClient(this);
-            locationClient.getLastLocation()
-                    .addOnSuccessListener(new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            getAddress(location);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.d("MapDemoActivity", "Error trying to get last GPS location");
-                            e.printStackTrace();
-                        }
-                    });
-            return;
-        }
-
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                Manifest.permission.READ_CONTACTS)) {
-            notifyNoAccess();
-            return;
-        }
-
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                REQUEST_FINE_LOCATION);
-
-    }
-
-    private void getAddress(Location location) {
-        if (location == null) {
-            tvLocation.setText("San Francisco");
-            return;
-        }
-
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        try {
-            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(),
-                    location.getLongitude(), 1);
-            Address obj = addresses.get(0);
-            tvLocation.setText(obj.getLocality());
-            mLatLng.lat = location.getLatitude();
-            mLatLng.lon = location.getLongitude();
-//            itemForSale.setLocationFull(obj);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_FINE_LOCATION: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    getUserLocation();
-
-                } else {
-                    notifyNoAccess();
-                }
-            }
-        }
-    }
-
-    public void notifyNoAccess(){
-        Toast.makeText(this,
-                R.string.permission_message,
-                Toast.LENGTH_SHORT).show();
     }
 
     // MARK: Service call
@@ -400,5 +329,19 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
                 finish();
             }
         });
+    }
+
+    public void onClickLocation(View view) {
+        try {
+            Intent intent =
+                    new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
+                            .build(this);
+            startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
+        } catch (GooglePlayServicesRepairableException e) {
+            // TODO: Handle the error.
+        } catch (GooglePlayServicesNotAvailableException e) {
+            // TODO: Handle the error.
+        }
+
     }
 }
