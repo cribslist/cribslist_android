@@ -41,4 +41,6 @@
     <string name="select_category">Select Category</string>
     <string name="action_remove_all">Remove All</string>
     <string name="enter_location">Enter Location</string>
+    <string name="email">Email</string>
+    <string name="comment">Comment</string>
 </resources>
