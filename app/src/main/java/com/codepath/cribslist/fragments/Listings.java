@@ -76,6 +76,11 @@ public class Listings extends Fragment {
         return v;
     }
 
+    public void addItem(Item item) {
+        items.add(item);
+        mAdapter.notifyDataSetChanged();
+    }
+
     public void addItems(JSONArray response){
 
         items.addAll(Item.fromJSONArray(response));

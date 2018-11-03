@@ -1,5 +1,6 @@
 package com.codepath.cribslist.activities;
 
+import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -22,6 +23,7 @@ import com.baoyz.actionsheet.ActionSheet;
 import com.codepath.cribslist.R;
 import com.codepath.cribslist.constants.ItemCategory;
 import com.codepath.cribslist.helper.DispatchGroup;
+import com.codepath.cribslist.helper.SharedPref;
 import com.codepath.cribslist.models.Item;
 import com.codepath.cribslist.models.LatLng;
 import com.codepath.cribslist.network.CribslistClient;
@@ -72,6 +74,8 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
     private ArrayList<File> mImages;
     private ArrayList<Integer> mCategory;
     private LatLng mLatLng;
+
+    ProgressDialog progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -280,6 +284,11 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
     // MARK: Service call
 
     private void postImages() {
+        progress = new ProgressDialog(this);
+        progress.setTitle("Posting...");
+        progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+        progress.show();
+
         final DispatchGroup group = new DispatchGroup();
         final ArrayList<String> paths = new ArrayList<>();
 
@@ -288,7 +297,7 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
             CribslistClient.postImage(file, new CribslistClient.PostImageDelegate() {
                 @Override
                 public void handlePostImage(String path) {
-                    Log.d("DEBUG_", path);
+                    Log.d("DEBUG", path);
                     paths.add(path);
                     group.leave();
                 }
@@ -318,14 +327,22 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         String nowString = simpleDateFormat.format(now);
 
+        String thumbnailUrl = paths.get(0);
+        Long userId = Long.parseLong(SharedPref.getInstance().getUserId());
+
         final Item item = new Item(title, price, description,
-                null, location, mLatLng.lat, mLatLng.lon,
-                nowString, mCategory, null, paths);
+                userId, location, mLatLng.lat, mLatLng.lon,
+                nowString, mCategory, thumbnailUrl, paths);
 
         CribslistClient.postItem(item, new CribslistClient.PostItemDelegate() {
             @Override
             public void handlePostItem() {
                 Log.d("DEBUG", "successfully posted");
+                progress.dismiss();
+
+                Intent i = new Intent();
+                i.putExtra("item", item);
+                setResult(RESULT_OK, i);
                 finish();
             }
         });
