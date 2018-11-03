@@ -15,6 +15,22 @@ public class Comment {
         return comment_id;
     }
 
+    public void setComment_id(String comment_id) {
+        this.comment_id = comment_id;
+    }
+
+    public void setUser_id(Long user_id) {
+        this.user_id = user_id;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public void setThread_id(long thread_id) {
+        this.thread_id = thread_id;
+    }
+
     public Long getUser_id() {
         return user_id;
     }

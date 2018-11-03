@@ -11,6 +11,7 @@ import android.widget.EditText;
 
 import com.codepath.cribslist.R;
 import com.codepath.cribslist.adapters.CommentsAdapter;
+import com.codepath.cribslist.helper.SharedPref;
 import com.codepath.cribslist.models.Comment;
 import com.codepath.cribslist.network.CribslistClient;
 
@@ -22,6 +23,7 @@ public class Comments extends AppCompatActivity implements CribslistClient.GetCo
     LinearLayoutManager layoutManager;
     ArrayList<Comment> comments;
     EditText commentBox;
+    String threadId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +44,7 @@ public class Comments extends AppCompatActivity implements CribslistClient.GetCo
         mAdapter = new CommentsAdapter(comments);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setAdapter(mAdapter);
-        String threadId = getIntent().getStringExtra("thread_id");
+        threadId = getIntent().getStringExtra("thread_id");
         CribslistClient.getCommentsForId(threadId, this);
     }
 
@@ -60,9 +62,14 @@ public class Comments extends AppCompatActivity implements CribslistClient.GetCo
 
     public void submitComment(View view) {
         String c = commentBox.getText().toString();
-        Comment newComment = new Comment("morgan", c);
+        SharedPref sp = SharedPref.getInstance();
+        Comment newComment = new Comment(sp.getEmail(), c);
+        long uid = Long.parseLong(sp.getUserId());
+        newComment.setUser_id(uid);
         commentBox.setText("");
         comments.add(newComment);
+
         mAdapter.notifyItemInserted(comments.size() - 1);
+        CribslistClient.addComment(newComment, threadId);
     }
 }

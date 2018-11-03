@@ -11,5 +11,10 @@
                 android:title="@string/comment"
                 android:onClick="showComments"
                 />
+            <item
+                android:id="@+id/nav_third_fragment"
+                android:title="@string/flag"
+                android:onClick="flagItem"
+                />
         </group>
 </menu>

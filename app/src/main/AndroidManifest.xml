@@ -60,7 +60,9 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyD4JaHC87dqrJ-qLSVveoHnaCv1JJSnPp8"/>
 
-        <activity android:name=".activities.Comments"></activity>
+        <activity android:name=".activities.Comments"
+            android:windowSoftInputMode="adjustPan"
+            />
     </application>
 
 </manifest>

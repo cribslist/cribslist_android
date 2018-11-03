@@ -49,6 +49,7 @@ public class ItemDetail extends AppCompatActivity {
     private Button inquire;
     private ImageView blurry;
     private View base;
+    private Item item;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,7 +110,7 @@ public class ItemDetail extends AppCompatActivity {
         bounds.setDuration(200);
         bounds.setInterpolator(new AccelerateDecelerateInterpolator());
         getWindow().setSharedElementEnterTransition(bounds);
-        Item item = i.getParcelableExtra("item");
+        item = i.getParcelableExtra("item");
         long uid = item.getUid();
         loadItemDetail(uid);
         mSlider = findViewById(R.id.slider);
@@ -205,12 +206,17 @@ public class ItemDetail extends AppCompatActivity {
     }
 
 
-    public void showComments(MenuItem item) {
+    public void showComments(MenuItem menuItem) {
         Intent intent = new Intent(ItemDetail.this, Comments.class);
-        intent.putExtra("thread_id", "1234");
+        intent.putExtra("thread_id", String.valueOf(item.getUid()));
         startActivity(intent);
     }
 
     public void writeEmail(MenuItem item) {
+    }
+
+    public void flagItem(MenuItem item) {
+        mDrawer.closeDrawers();
+        Toast.makeText(ItemDetail.this, "Content Flagged and sent for review", Toast.LENGTH_LONG).show();
     }
 }
