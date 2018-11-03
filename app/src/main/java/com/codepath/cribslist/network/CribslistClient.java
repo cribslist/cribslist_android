@@ -37,7 +37,7 @@ public class CribslistClient {
         void handleGetComments(ArrayList<Comment> comments);
     }
 
-    public static final String BASE_URL = "https://cribslist.herokuapp.com/";
+    public static final String BASE_URL = "http://cribslist.herokuapp.com/";
 
     public static void getAccountDetail(final GetAccountDelegate delegate) {
         String apiUrl = BASE_URL + "account/" + SharedPref.getInstance().getUserId();
@@ -209,7 +209,7 @@ public class CribslistClient {
     public static void getCommentsForId(String threadId, final GetComments getComments){
         ArrayList<Comment> comments = new ArrayList<>();
         AsyncHttpClient client = new AsyncHttpClient();
-        String url = BASE_URL + "/comments/" + threadId;
+        String url = BASE_URL + "comments/" + threadId;
         client.get(url, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -225,6 +225,48 @@ public class CribslistClient {
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 super.onSuccess(statusCode, headers, response);
                 getComments.handleGetComments(Comment.fromJSONArray(response));
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                throw new AssertionError(responseString);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+            }
+        });
+    }
+
+    public static void addComment(Comment c, String threadId){
+        AsyncHttpClient client = new AsyncHttpClient();
+        String url = BASE_URL + "comments/" + threadId;
+        RequestParams params = new RequestParams();
+        params.put("user_id", c.getUser_id());
+        params.put("username", c.getUsername());
+        params.put("text", c.getText());
+        params.put("thread_id", threadId);
+        params.setForceMultipartEntityContentType(true);
+        client.post(url, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                super.onSuccess(statusCode, headers, responseString);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                super.onSuccess(statusCode, headers, response);
             }
 
             @Override

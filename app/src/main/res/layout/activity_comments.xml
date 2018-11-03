@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".activities.Comments"
     android:background="@drawable/bg"
+    android:isScrollContainer="false"
     >
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"

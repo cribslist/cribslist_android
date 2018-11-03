@@ -35,8 +35,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
 
     }
 
-    public CommentsAdapter(ArrayList<Comment> myDataset) { mDataset = myDataset;
-    }
+    public CommentsAdapter(ArrayList<Comment> myDataset) { mDataset = myDataset; }
 
     @Override
     public CommentsViewHolder onCreateViewHolder( ViewGroup parent,
