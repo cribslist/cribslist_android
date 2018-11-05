@@ -304,7 +304,7 @@ public class CribslistClient {
 
     public static void getUserForId(final long uid, final GetUser getUserCb){
         AsyncHttpClient client = new AsyncHttpClient();
-        String url = BASE_URL + "accounts/" + String.valueOf(uid);
+        String url = BASE_URL + "account/" + String.valueOf(uid);
         client.get(url, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -314,8 +314,8 @@ public class CribslistClient {
                     getUserCb.handleGetUser(user);
                 } catch(JSONException e){
                     e.printStackTrace();
-                    User user = UserGenerator.getRandomUser(uid);
-                    getUserCb.handleGetUser(user);
+
+
                 }
 
             }
@@ -328,6 +328,15 @@ public class CribslistClient {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 super.onSuccess(statusCode, headers, response);
+                try {
+                    JSONObject userRaw = response.getJSONObject(0);
+                    User user = new User(userRaw);
+                    getUserCb.handleGetUser(user);
+                } catch(JSONException e){
+                    e.printStackTrace();
+
+
+                }
             }
 
             @Override
