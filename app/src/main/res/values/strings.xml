@@ -44,4 +44,7 @@
     <string name="email">Email</string>
     <string name="comment">Comment</string>
     <string name="flag">Flag</string>
+    <string name="add_comment">add comment...</string>
+    <string name="options">Options</string>
+    <string name="delete">Delete</string>
 </resources>

@@ -44,7 +44,7 @@ public class AccountActivity extends AppCompatActivity {
         GridLayoutManager layoutManager = new GridLayoutManager(this, numberOfColumns);
         mRecyclerView.setLayoutManager(layoutManager);
         items = new ArrayList<>();
-        mAdapter = new ItemAdapter(items);
+        mAdapter = new ItemAdapter(items, true);
         mRecyclerView.setAdapter(mAdapter);
 
         loadAccount();

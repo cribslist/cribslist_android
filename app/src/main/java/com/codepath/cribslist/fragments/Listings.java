@@ -14,6 +14,7 @@ import com.codepath.cribslist.R;
 import com.codepath.cribslist.adapters.ItemAdapter;
 import com.codepath.cribslist.constants.API_PARAM;
 import com.codepath.cribslist.constants.API_ROUTE;
+import com.codepath.cribslist.helper.SharedPref;
 import com.codepath.cribslist.listeners.EndlessRecyclerViewScrollListener;
 import com.codepath.cribslist.models.Item;
 import com.loopj.android.http.AsyncHttpClient;
@@ -69,7 +70,8 @@ public class Listings extends Fragment {
 
         layoutManager = new GridLayoutManager(getContext(), numberOfColumns);
         mRecyclerView.setLayoutManager(layoutManager);
-        mAdapter = new ItemAdapter(items);
+        Boolean isOwnListings = listingType != 0;
+        mAdapter = new ItemAdapter(items, isOwnListings);
         mRecyclerView.setAdapter(mAdapter);
         fragmentRoute = getRouteForType(listingType);
         search();
@@ -101,8 +103,8 @@ public class Listings extends Fragment {
             case 0:
                 return API_ROUTE.ITEMS;
             case 1:
-                //TODO: grab id from user
-                return String.format(API_ROUTE.MY_ITEMS, 123);
+                long uid = Long.parseLong(SharedPref.getInstance().getUserId());
+                return String.format(API_ROUTE.MY_ITEMS, uid);
             default:
                 return API_ROUTE.ITEMS;
         }
@@ -135,7 +137,7 @@ public class Listings extends Fragment {
 
     public RequestParams getRequestParams(int page){
         RequestParams params = new RequestParams();
-        params.put(API_PARAM.COUNT, 2);
+        params.put(API_PARAM.COUNT, 10);
         params.put(API_PARAM.PAGE, page);
         if(listingType == 0 && !"".equals(searchQuery)){
             params.put(API_PARAM.QUERY, searchQuery);

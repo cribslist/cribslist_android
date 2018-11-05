@@ -31,6 +31,8 @@ import android.widget.TextView;
 
 import com.codepath.cribslist.R;
 import com.codepath.cribslist.helper.SharedPref;
+import com.codepath.cribslist.models.User;
+import com.codepath.cribslist.network.CribslistClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -373,9 +375,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             if (success) {
                 String email = mEmailView.getText().toString();
-                String userId = "1540263890986";
+                String userId = String.valueOf(System.currentTimeMillis() / 1000L);
                 SharedPref.getInstance().setEmail(email);
                 SharedPref.getInstance().setUserId(userId);
+                User user = new User(Long.parseLong(userId), email);
+                //todo: add in name here, server will add "Anonymous User"
+                CribslistClient.addUser(user);
                 launchMainActivity();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));

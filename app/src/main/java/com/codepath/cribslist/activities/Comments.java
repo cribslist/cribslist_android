@@ -35,7 +35,7 @@ public class Comments extends AppCompatActivity implements CribslistClient.GetCo
         if(ab != null){
             ab.setDisplayShowHomeEnabled(true);
             ab.setDisplayHomeAsUpEnabled(true);
-            ab.setTitle("");
+            ab.setTitle(getIntent().getStringExtra("title"));
         }
 
         mRecyclerView = findViewById(R.id.comments);
