@@ -107,6 +107,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+
     public void updateFAB(int i){
         currentPageIndex = i;
         updateFABIcon();
@@ -123,6 +125,15 @@ public class MainActivity extends AppCompatActivity {
                     return;
             }
         }
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+            Listings myListings = (Listings) adapter.getRegisteredFragment(1);
+            if(myListings != null){
+                myListings.refreshOwnListings();
+            }
     }
 
     public void setupFAB(){

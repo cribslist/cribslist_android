@@ -54,6 +54,7 @@ public class Listings extends Fragment {
         return fragment;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +75,7 @@ public class Listings extends Fragment {
         mAdapter = new ItemAdapter(items, isOwnListings);
         mRecyclerView.setAdapter(mAdapter);
         fragmentRoute = getRouteForType(listingType);
-        search();
+        fetchData();
         return v;
     }
 
@@ -84,7 +85,7 @@ public class Listings extends Fragment {
         mAdapter.notifyDataSetChanged();
     }
 
-    public void search(){
+    public void fetchData(){
         loadNextDataFromApi(fragmentRoute, currentPage);
         scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
@@ -110,6 +111,15 @@ public class Listings extends Fragment {
         }
     }
 
+    public void refreshOwnListings(){
+        if(listingType == 1){
+            items.clear();
+            currentPage = 0;
+            fetchData();
+        }
+
+    }
+
     public void loadNextDataFromApi(String route, int page){
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = getRequestParams(currentPage);
@@ -132,7 +142,7 @@ public class Listings extends Fragment {
         searchQuery = query;
         items.clear();
         currentPage = 0;
-        search();
+        fetchData();
     }
 
     public RequestParams getRequestParams(int page){
