@@ -13,7 +13,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class Item implements Parcelable {
-    private long uid;
+    private long id;
     private String title;
     private long price;
     private String description;
@@ -26,8 +26,8 @@ public class Item implements Parcelable {
     private String thumbnailURL;
     private ArrayList<String> photoURLs = new ArrayList<>();
 
-    public long getUid() {
-        return uid;
+    public long getId() {
+        return id;
     }
 
     public String getTitle() {
@@ -95,7 +95,7 @@ public class Item implements Parcelable {
     }
 
     public Item(JSONObject jsonObject) throws JSONException{
-        this.uid = jsonObject.getLong(ITEM_FIELD.ID);
+        this.id = jsonObject.getLong(ITEM_FIELD.ID);
         this.title = jsonObject.getString(ITEM_FIELD.TITLE);
         this.description = jsonObject.getString(ITEM_FIELD.DESCRIPTION);
         this.sellerID = jsonObject.getLong(ITEM_FIELD.SELLER);
@@ -136,7 +136,7 @@ public class Item implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel out, int flags) {
-        out.writeLong(uid);
+        out.writeLong(id);
         out.writeString(title);
         out.writeLong(price);
         out.writeString(description);
@@ -151,7 +151,7 @@ public class Item implements Parcelable {
     }
 
     private Item(Parcel in) {
-        this.uid = in.readLong();
+        this.id = in.readLong();
         this.title = in.readString();
         this.price = in.readLong();
         this.description = in.readString();

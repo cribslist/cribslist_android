@@ -10,6 +10,35 @@ public class User {
     private long uid;
     private String name;
     private String email;
+
+    public void setUid(long uid) {
+        this.uid = uid;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+
+    public void setItems(ArrayList<Item> items) {
+        this.items = items;
+    }
+
+    public void setUserPhotoURL(String userPhotoURL) {
+        this.userPhotoURL = userPhotoURL;
+    }
+
     private String location;
     private double rating;
     private ArrayList<Item> items;
@@ -42,7 +71,13 @@ public class User {
     public String getUserPhotoURL() {
         return userPhotoURL;
     }
-
+    public User(long uid){
+        this.uid = uid;
+    }
+    public User(long uid, String email){
+        this.uid = uid;
+        this.email = email;
+    }
     public User(JSONObject jsonObject) throws JSONException {
         this.uid = jsonObject.getLong("id");
         this.name = jsonObject.getString("name");

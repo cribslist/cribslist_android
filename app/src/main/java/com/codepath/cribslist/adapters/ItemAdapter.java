@@ -23,6 +23,7 @@ import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOption
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
     private ArrayList<Item> mDataset;
+    private final Boolean isOwnListings;
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         View mItemView;
         ImageView mThumbnail;
@@ -45,18 +46,20 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION) {
                 Item item = mDataset.get(position);
-                String idString =  String.valueOf(item.getUid());
-//                ViewCompat.setTransitionName(mThumbnail, idString);
                 Intent i = new Intent(context, ItemDetail.class);
                 ActivityOptionsCompat options = ActivityOptionsCompat.
                         makeSceneTransitionAnimation((Activity)context,(View)mThumbnail, "main");
                 i.putExtra("item", item);
+                i.putExtra("isOwnListing", isOwnListings);
                 context.startActivity(i, options.toBundle());
             }
         }
     }
 
-    public ItemAdapter(ArrayList<Item> myDataset) { mDataset = myDataset;
+
+    public ItemAdapter(ArrayList<Item> myDataset, Boolean isOwnListings) {
+        this.mDataset = myDataset;
+        this.isOwnListings = isOwnListings;
     }
 
     @Override
