@@ -38,6 +38,8 @@ public class AccountActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(TITLE_TEXT);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         mRecyclerView = findViewById(R.id.rvItems);
 
@@ -48,6 +50,12 @@ public class AccountActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
 
         loadAccount();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     private void loadAccount() {
