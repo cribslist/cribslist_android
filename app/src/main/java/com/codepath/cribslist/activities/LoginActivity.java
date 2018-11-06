@@ -44,7 +44,7 @@ import static android.Manifest.permission.READ_CONTACTS;
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
-    private static final String TITLE_TEXT = "Login";
+    private static final String TITLE_TEXT = "Cribslist";
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -110,7 +110,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        mLoginFormView = findViewById(R.id.login_form);
+        mLoginFormView = findViewById(R.id.post_form);
         mProgressView = findViewById(R.id.login_progress);
 
         setDisplayStatus(DisplayStatus.LOG_IN);
@@ -308,6 +308,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private void launchMainActivity() {
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
+        finish();
     }
 
     public void onClickSwitchButton(View view) {

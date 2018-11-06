@@ -26,7 +26,8 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".activities.LoginActivity"
-            android:label="@string/title_activity_login">
+            android:label="@string/title_activity_login"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -44,7 +45,9 @@
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".activities.AccountActivity" />
         <activity android:name=".activities.ItemListing" />
-        <activity android:name=".activities.PostActivity" />
+        <activity
+            android:name=".activities.PostActivity"
+            android:windowSoftInputMode="adjustResize" />
         <activity android:name=".activities.ItemDetail" />
 
         <provider
@@ -58,11 +61,11 @@
         </provider>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyD4JaHC87dqrJ-qLSVveoHnaCv1JJSnPp8"/>
+            android:value="AIzaSyD4JaHC87dqrJ-qLSVveoHnaCv1JJSnPp8" />
 
-        <activity android:name=".activities.Comments"
-            android:windowSoftInputMode="adjustPan"
-            />
+        <activity
+            android:name=".activities.Comments"
+            android:windowSoftInputMode="adjustPan" />
     </application>
 
 </manifest>
