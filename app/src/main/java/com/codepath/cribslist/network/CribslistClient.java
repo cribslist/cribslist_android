@@ -362,10 +362,6 @@ public class CribslistClient {
         });
     }
 
-    public static void addUser(User user){
-        addUser(user, null);
-    }
-
     public static void addUser(final User user, final GetUser getUser){
         AsyncHttpClient client = new AsyncHttpClient();
         String url = BASE_URL + "account";
@@ -378,11 +374,9 @@ public class CribslistClient {
         client.post(url, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                super.onSuccess(statusCode, headers, response);
-
-                    if(response != null){
-                        getUser.handleGetUser(user);
-                    }
+                if(response != null){
+                    getUser.handleGetUser(user);
+                }
             }
 
             @Override
@@ -397,17 +391,17 @@ public class CribslistClient {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-
+                Log.d("DEBUG", responseString);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-
+                Log.d("DEBUG", errorResponse.toString());
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-
+                Log.d("DEBUG", errorResponse.toString());
             }
         });
     }

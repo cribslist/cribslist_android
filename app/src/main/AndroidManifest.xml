@@ -59,6 +59,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/fileprovider" />
         </provider>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyD4JaHC87dqrJ-qLSVveoHnaCv1JJSnPp8" />
@@ -66,6 +67,7 @@
         <activity
             android:name=".activities.Comments"
             android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".activities.RegisterActivity"></activity>
     </application>
 
 </manifest>
