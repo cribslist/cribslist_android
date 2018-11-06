@@ -61,7 +61,6 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
     public final static int PICK_PHOTO_CODE = 1046;
     private String photoFileName = "photo.jpg";
     private File photoFile;
-    private final static int REQUEST_FINE_LOCATION = 10;
     private final static int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
 
     SliderLayout mSlider;
@@ -359,6 +358,5 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
         } catch (GooglePlayServicesNotAvailableException e) {
             // TODO: Handle the error.
         }
-
     }
 }
