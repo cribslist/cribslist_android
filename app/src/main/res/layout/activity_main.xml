@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity"
-    android:background="@drawable/bg"
+    android:background="@drawable/bg_1"
     android:id="@+id/base"
     >
     <android.support.constraint.ConstraintLayout
@@ -67,10 +67,11 @@
         android:backgroundTint="@android:color/transparent">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="35dp"
+            android:paddingStart="4dp"
+            android:layout_height="35dp"
             android:layout_gravity="center|top"
-            android:src="@drawable/ic_child_friendly_white_24dp" />
+            android:src="@drawable/stroller" />
     </android.support.v7.widget.Toolbar>
 
     <include layout="@layout/content_main" />

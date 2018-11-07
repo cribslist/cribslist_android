@@ -51,4 +51,6 @@
     <string name="prompt_name">Name</string>
     <string name="add_profile_photo">Add Profile Photo</string>
     <string name="user_location">Location</string>
+    <string name="invalid_input">Please fill out all fields before continuing...</string>
+    <string name="cribslist">Cribslist</string>
 </resources>

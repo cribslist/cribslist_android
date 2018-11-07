@@ -12,6 +12,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -35,6 +37,8 @@ import com.codepath.cribslist.network.CribslistClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.Timer;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -44,6 +48,10 @@ import static android.Manifest.permission.READ_CONTACTS;
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
     private static final String TITLE_TEXT = "Cribslist";
+    private Random random = new Random();
+    private Timer timer;
+    private Runnable runnable;
+    private Handler handler = new Handler(Looper.getMainLooper());
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -63,12 +71,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-
     private DisplayStatus displayStatus;
 
     enum DisplayStatus {
         LOG_IN, REGISTER
     }
+
+    public int randomBgImage(int min, int max){
+        String value = String.valueOf(random.nextInt(max - min + 1) + min);
+        String drawableName = "bg_" + value;
+        return getResources().getIdentifier(drawableName , "drawable", getPackageName());
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,12 +90,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         setContentView(R.layout.activity_login);
 
         SharedPref.init(getApplicationContext());
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(TITLE_TEXT);
-
-        // Set up the login form.
+        getSupportActionBar().setTitle("");
+        setRandomBackgroundImage();
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                setRandomBackgroundImage();
+                handler.postDelayed(this, 5000);
+            }
+        };
+        handler.postDelayed(runnable, 5000);
         mEmailView = findViewById(R.id.email);
         populateAutoComplete();
 
@@ -114,6 +134,27 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             launchMainActivity();
         }
     }
+
+    public void setRandomBackgroundImage(){
+        getWindow().setBackgroundDrawableResource(randomBgImage(1,12));
+    }
+    @Override
+    public void onPause(){
+        super.onPause();
+        if(handler != null){
+            handler.removeCallbacks(runnable);
+        }
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        if(handler != null){
+            handler.removeCallbacks(runnable);
+            handler.postDelayed(runnable, 5000);
+        }
+    }
+
 
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {

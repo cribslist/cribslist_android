@@ -56,7 +56,7 @@ public class RegisterActivity extends AppCompatActivity implements ActionSheet.A
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
+        getWindow().setBackgroundDrawableResource(R.drawable.bg_10);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Register");

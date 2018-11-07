@@ -4,33 +4,64 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".activities.LoginActivity">
-
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appBarLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+    tools:context=".activities.LoginActivity"
+    >
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@android:color/transparent"
+            />
+    <FrameLayout
+        android:id="@+id/bgbase"
+        android:background="@color/titleBG"
+        android:scaleType="fitXY"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:elevation="0dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        />
 
-    </android.support.design.widget.AppBarLayout>
-    <!-- Login progress -->
-
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_height="100dp"
+        android:layout_width="100dp"
+        android:layout_marginTop="75dp"
+        android:src="@drawable/stroller_2"
+        android:elevation="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        />
+    <TextView
+        android:id="@+id/wordmark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/cribslist"
+        android:elevation="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/logo"
+        android:layout_marginBottom="50dp"
+        />
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/post_form"
+        android:elevation="4dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
+        app:layout_constraintTop_toBottomOf="@+id/wordmark"
         android:animateLayoutChanges="true"
         app:layout_constraintVertical_bias="1.0">
 
@@ -39,7 +70,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:animateLayoutChanges="true"
-            android:orientation="vertical">
+            android:elevation="4dp"
+            >
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/textInputLayout3"
@@ -115,7 +147,7 @@
             <Button
                 android:id="@+id/email_sign_in_button"
                 style="?android:textAppearanceSmall"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
@@ -133,10 +165,8 @@
             <Button
                 android:id="@+id/btSwitch"
                 style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
                 android:layout_marginBottom="32dp"
                 android:onClick="onClickSwitchButton"
                 android:text="@string/action_sign_in_short"
@@ -157,5 +187,5 @@
         app:layout_constraintBottom_toBottomOf="@+id/post_form"
         app:layout_constraintEnd_toEndOf="@+id/post_form"
         app:layout_constraintStart_toStartOf="@+id/post_form"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 </android.support.constraint.ConstraintLayout>

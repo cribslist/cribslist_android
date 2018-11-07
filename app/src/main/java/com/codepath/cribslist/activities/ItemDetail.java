@@ -116,7 +116,7 @@ public class ItemDetail extends AppCompatActivity implements CribslistClient.Get
         ArrayList<String> urls = item.getPhotoURLs();
         initSlider(urls);
         bgImage = findViewById(R.id.bgImg);
-        Bitmap bg = getBgBitmap(getResources().getDrawable(R.drawable.bg));
+        Bitmap bg = getBgBitmap(getResources().getDrawable(R.drawable.bg_1));
         Blurry.with(ItemDetail.this).radius(50).animate(1000).from(bg).into(bgImage);
 
     }

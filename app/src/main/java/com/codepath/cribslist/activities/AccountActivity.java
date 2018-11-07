@@ -52,7 +52,7 @@ public class AccountActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
 
         mUserId = getIntent().getLongExtra("userId", 0L);
-
+        getWindow().setBackgroundDrawableResource(R.drawable.bg_1);
         loadAccount();
     }
 

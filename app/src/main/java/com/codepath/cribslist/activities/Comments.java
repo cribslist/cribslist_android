@@ -62,14 +62,17 @@ public class Comments extends AppCompatActivity implements CribslistClient.GetCo
 
     public void submitComment(View view) {
         String c = commentBox.getText().toString();
-        SharedPref sp = SharedPref.getInstance();
-        Comment newComment = new Comment(sp.getEmail(), c);
-        long uid = Long.parseLong(sp.getUserId());
-        newComment.setUser_id(uid);
-        commentBox.setText("");
-        comments.add(newComment);
+        if(!"".equals(c.trim())){
+            SharedPref sp = SharedPref.getInstance();
+            Comment newComment = new Comment(sp.getEmail(), c);
+            long uid = Long.parseLong(sp.getUserId());
+            newComment.setUser_id(uid);
+            commentBox.setText("");
+            comments.add(newComment);
 
-        mAdapter.notifyItemInserted(comments.size() - 1);
-        CribslistClient.addComment(newComment, threadId);
+            mAdapter.notifyItemInserted(comments.size() - 1);
+            CribslistClient.addComment(newComment, threadId);
+        }
+
     }
 }

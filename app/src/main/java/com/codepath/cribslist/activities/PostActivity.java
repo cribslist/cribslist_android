@@ -81,6 +81,7 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
 
+
         setupViews();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -88,7 +89,7 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
         getSupportActionBar().setTitle(TITLE_TEXT);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
+        getWindow().setBackgroundDrawableResource(R.drawable.bg_1);
         mImages = new ArrayList<>();
         mCategory = new ArrayList<>();
         mSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
@@ -319,6 +320,11 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
         });
     }
 
+    private void notifyIncomplete(){
+        Toast.makeText(PostActivity.this, R.string.invalid_input, Toast.LENGTH_LONG).show();
+        progress.hide();
+    }
+
     private void postItem(ArrayList<String> paths) {
         String title = etTitle.getText().toString();
         int price = 0;
@@ -327,7 +333,17 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
         } catch(NumberFormatException nfe) {
             System.out.println("Could not parse " + nfe);
         }
+
+        if(price == 0){
+            notifyIncomplete();
+            return;
+        }
+
         String description = etDescription.getText().toString();
+        if("".equals(description)){
+            notifyIncomplete();
+            return;
+        }
         String location = tvLocation.getText().toString();
 
         Date now = Calendar.getInstance().getTime();
@@ -335,6 +351,10 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
         String nowString = simpleDateFormat.format(now);
 
         String thumbnailUrl = paths.get(0);
+        if(thumbnailUrl == null || "".equals(thumbnailUrl)){
+            notifyIncomplete();
+            return;
+        }
         Long userId = Long.parseLong(SharedPref.getInstance().getUserId());
 
         final Item item = new Item(title, price, description,

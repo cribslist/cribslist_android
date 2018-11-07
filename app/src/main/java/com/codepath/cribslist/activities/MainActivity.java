@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private View searchBarView;
     ListingFragmentPagerAdapter adapter;
     Listings listingFragment;
+    private Boolean isItemOpen;
     private static final String LISTINGS_FRAGMENT = "LISTINGS_FRAGMENT";
     private static final int POST_ACTIVITY_REQUEST_CODE = 8000;
 
@@ -139,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
             if(myListings != null){
                 myListings.refreshOwnListings();
             }
+            isItemOpen = false;
     }
 
     public void setupFAB(){
