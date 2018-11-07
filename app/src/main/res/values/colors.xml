@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimaryDark">#06283b</color>
+    <color name="colorAccent">#007297</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorClear">#00000000</color>
     <color name="titleBG">#67ffffff</color>
+    <color name="titleBGDarker">#e2ffffff</color>
 
     <color name="material_amber300">#ffffd54f</color>
     <color name="material_amber500">#ffffc107</color>
