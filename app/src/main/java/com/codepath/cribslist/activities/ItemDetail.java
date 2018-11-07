@@ -269,4 +269,9 @@ public class ItemDetail extends AppCompatActivity implements CribslistClient.Get
         onBackPressed();
     }
 
+    public void onClickImageView(View view) {
+        Intent i = new Intent(this, AccountActivity.class);
+        i.putExtra("userId", user.getUid());
+        startActivity(i);
+    }
 }

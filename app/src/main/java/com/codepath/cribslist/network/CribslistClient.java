@@ -2,7 +2,6 @@ package com.codepath.cribslist.network;
 
 import android.util.Log;
 
-import com.codepath.cribslist.helper.SharedPref;
 import com.codepath.cribslist.models.Comment;
 import com.codepath.cribslist.models.Item;
 import com.codepath.cribslist.models.User;
@@ -48,8 +47,8 @@ public class CribslistClient {
 
     public static final String BASE_URL = "http://cribslist.herokuapp.com/";
 
-    public static void getAccountDetail(final GetAccountDelegate delegate) {
-        String apiUrl = BASE_URL + "account/" + SharedPref.getInstance().getUserId();
+    public static void getAccountDetail(long userId, final GetAccountDelegate delegate) {
+        String apiUrl = BASE_URL + "account/" + userId;
 
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(apiUrl, null, new JsonHttpResponseHandler() {

@@ -30,7 +30,7 @@ public class AccountActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private ArrayList<Item> items;
-    private User user;
+    private long mUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +51,8 @@ public class AccountActivity extends AppCompatActivity {
         mAdapter = new ItemAdapter(items, true);
         mRecyclerView.setAdapter(mAdapter);
 
+        mUserId = getIntent().getLongExtra("userId", 0L);
+
         loadAccount();
     }
 
@@ -61,7 +63,7 @@ public class AccountActivity extends AppCompatActivity {
     }
 
     private void loadAccount() {
-        CribslistClient.getAccountDetail(new CribslistClient.GetAccountDelegate() {
+        CribslistClient.getAccountDetail(mUserId, new CribslistClient.GetAccountDelegate() {
             @Override
             public void handleGetAccount(User user) {
                 items.addAll(user.getItems());
