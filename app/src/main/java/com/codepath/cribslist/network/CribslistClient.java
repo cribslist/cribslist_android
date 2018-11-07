@@ -45,6 +45,10 @@ public class CribslistClient {
         void handleDeleteItem();
     }
 
+    public interface GetItemsDelegate {
+        void handleGetItems(ArrayList<Item> items);
+    }
+
     public static final String BASE_URL = "http://cribslist.herokuapp.com/";
 
     public static void getAccountDetail(long userId, final GetAccountDelegate delegate) {
@@ -442,5 +446,29 @@ public class CribslistClient {
         });
     }
 
+    public static void getItems(long userId, final GetItemsDelegate delegate) {
+        AsyncHttpClient client = new AsyncHttpClient();
+        String url = BASE_URL + "my_items/" + userId;
+        client.get(url, null, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                ArrayList<Item> items = new ArrayList<>();
+                for (int i = 0; i < response.length(); i++) {
+                    try {
+                        JSONObject itemRow = response.getJSONObject(i);
+                        Item item = new Item(itemRow);
+                        items.add(item);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                delegate.handleGetItems(items);
+            }
 
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+            }
+        });
+    }
 }

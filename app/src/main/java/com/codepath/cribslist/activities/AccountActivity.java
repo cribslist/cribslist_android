@@ -62,12 +62,21 @@ public class AccountActivity extends AppCompatActivity {
         return true;
     }
 
+    private void loadItems() {
+        CribslistClient.getItems(mUserId, new CribslistClient.GetItemsDelegate() {
+            @Override
+            public void handleGetItems(ArrayList<Item> theItems) {
+                items.addAll(theItems);
+                mAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
     private void loadAccount() {
         CribslistClient.getAccountDetail(mUserId, new CribslistClient.GetAccountDelegate() {
             @Override
             public void handleGetAccount(User user) {
-                items.addAll(user.getItems());
-                mAdapter.notifyDataSetChanged();
+                loadItems();
 
                 ImageView iv = findViewById(R.id.ivProfileImage);
                 TextView tvName = findViewById(R.id.tvName);
