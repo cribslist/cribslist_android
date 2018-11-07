@@ -61,8 +61,16 @@ public class RegisterActivity extends AppCompatActivity implements ActionSheet.A
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Register");
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         mUser = (User) getIntent().getSerializableExtra("user");
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     @Override

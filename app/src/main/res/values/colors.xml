@@ -6,4 +6,9 @@
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorClear">#00000000</color>
     <color name="titleBG">#67ffffff</color>
+
+    <color name="material_amber300">#ffffd54f</color>
+    <color name="material_amber500">#ffffc107</color>
+    <color name="material_amberA400">#ffffc400</color>
+    <color name="material_amberA700">#ffffab00</color>
 </resources>

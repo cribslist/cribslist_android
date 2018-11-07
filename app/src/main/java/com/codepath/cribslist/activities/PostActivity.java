@@ -86,6 +86,8 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(TITLE_TEXT);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         mImages = new ArrayList<>();
         mCategory = new ArrayList<>();
@@ -94,6 +96,12 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
         mLatLng = new LatLng(37.7749,-122.4194);
 
         setupSpinner();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     private void setupViews() {

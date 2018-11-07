@@ -6,6 +6,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.animation.BounceInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,6 +17,7 @@ import com.codepath.cribslist.adapters.ItemAdapter;
 import com.codepath.cribslist.models.Item;
 import com.codepath.cribslist.models.User;
 import com.codepath.cribslist.network.CribslistClient;
+import com.iarcuschin.simpleratingbar.SimpleRatingBar;
 
 import java.util.ArrayList;
 
@@ -38,6 +40,8 @@ public class AccountActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(TITLE_TEXT);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         mRecyclerView = findViewById(R.id.rvItems);
 
@@ -50,6 +54,12 @@ public class AccountActivity extends AppCompatActivity {
         loadAccount();
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
     private void loadAccount() {
         CribslistClient.getAccountDetail(new CribslistClient.GetAccountDelegate() {
             @Override
@@ -60,9 +70,11 @@ public class AccountActivity extends AppCompatActivity {
                 ImageView iv = findViewById(R.id.ivProfileImage);
                 TextView tvName = findViewById(R.id.tvName);
                 TextView tvEmail = findViewById(R.id.tvEmail);
+                TextView tvLocation = findViewById(R.id.tvLocation);
 
                 tvName.setText(user.getName());
                 tvEmail.setText(user.getEmail());
+                tvLocation.setText(user.getLocation());
 
                 RequestOptions options = new RequestOptions()
                         .centerCrop()
@@ -74,6 +86,17 @@ public class AccountActivity extends AppCompatActivity {
                         .transition(withCrossFade())
                         .apply(options)
                         .into(iv);
+
+                SimpleRatingBar mRatingBar = findViewById(R.id.simpleRatingBar);
+                double rating = user.getRating() / 10.0d;
+                float ratingFloat = Float.valueOf(String.valueOf(rating));
+                SimpleRatingBar.AnimationBuilder builder = mRatingBar.getAnimationBuilder()
+                        .setRatingTarget(ratingFloat)
+                        .setRepeatCount(0)
+                        .setDuration(2000)
+                        .setInterpolator(new BounceInterpolator());
+                builder.start();
+
             }
         });
     }

@@ -50,4 +50,5 @@
     <string name="action_remove">Remove</string>
     <string name="prompt_name">Name</string>
     <string name="add_profile_photo">Add Profile Photo</string>
+    <string name="user_location">Location</string>
 </resources>
