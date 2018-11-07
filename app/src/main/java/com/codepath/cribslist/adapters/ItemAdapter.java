@@ -44,7 +44,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         @Override
         public void onClick(View view) {
             int position = getAdapterPosition();
-            if (position != RecyclerView.NO_POSITION) {
+            if (position != RecyclerView.NO_POSITION && mDataset.size() > 0) {
                 Item item = mDataset.get(position);
                 Intent i = new Intent(context, ItemDetail.class);
                 ActivityOptionsCompat options = ActivityOptionsCompat.

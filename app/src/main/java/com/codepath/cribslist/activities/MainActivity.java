@@ -26,6 +26,7 @@ import com.codepath.cribslist.R;
 import com.codepath.cribslist.adapters.ListingFragmentPagerAdapter;
 import com.codepath.cribslist.animations.VerticalFlipTransformation;
 import com.codepath.cribslist.fragments.Listings;
+import com.codepath.cribslist.helper.SharedPref;
 import com.codepath.cribslist.models.Item;
 import com.crashlytics.android.Crashlytics;
 
@@ -190,6 +191,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void launchAccountActivity() {
         Intent i = new Intent(this, AccountActivity.class);
+        long userId = Long.parseLong(SharedPref.getInstance().getUserId());
+        i.putExtra("userId", userId);
         startActivity(i);
     }
 

@@ -214,7 +214,7 @@ public class RegisterActivity extends AppCompatActivity implements ActionSheet.A
 
     private void postImage() {
         progress = new ProgressDialog(this);
-        progress.setTitle("Posting...");
+        progress.setTitle("Loading...");
         progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
         progress.show();
 
