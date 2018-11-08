@@ -17,6 +17,7 @@ import android.os.Looper;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -391,7 +392,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private void setDisplayStatus(DisplayStatus status) {
         displayStatus = status;
 
-        EditText et = findViewById(R.id.confirm_password);
+        TextInputLayout et = findViewById(R.id.textInputLayout);
         Button btSwitch = findViewById(R.id.btSwitch);
         Button btAction = findViewById(R.id.email_sign_in_button);
         switch (displayStatus) {
