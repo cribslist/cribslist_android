@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.baoyz.actionsheet.ActionSheet;
 import com.codepath.cribslist.R;
@@ -209,6 +210,13 @@ public class RegisterActivity extends AppCompatActivity implements ActionSheet.A
     }
 
     public void onClickPostBtn(View view) {
+        EditText et = findViewById(R.id.etName);
+        if (mUser.getLocation().equals("") == true ||
+                et.getText().equals("") == true) {
+            Toast.makeText(RegisterActivity.this, R.string.invalid_input, Toast.LENGTH_LONG).show();
+            return;
+        }
+
         postImage();
     }
 
