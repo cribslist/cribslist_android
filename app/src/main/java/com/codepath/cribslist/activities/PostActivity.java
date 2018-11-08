@@ -97,6 +97,10 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
         mLatLng = new LatLng(37.7749,-122.4194);
 
         setupSpinner();
+
+        progress = new ProgressDialog(this);
+        progress.setTitle("Posting...");
+        progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
     }
 
     private void resetSlider() {
@@ -292,6 +296,27 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
     }
 
     public void onClickPostBtn(View view) {
+        String title = etTitle.getText().toString();
+        int price = 0;
+        try {
+            price = Integer.parseInt(etPrice.getText().toString());
+        } catch(NumberFormatException nfe) {
+            System.out.println("Could not parse " + nfe);
+        }
+
+        if(price == 0){
+            notifyIncomplete();
+            return;
+        }
+
+        String location = tvLocation.getText().toString();
+
+        String description = etDescription.getText().toString();
+        if("".equals(description) || "".equals(title) || "".equals(location)){
+            notifyIncomplete();
+            return;
+        }
+
         postImages();
     }
 
@@ -302,9 +327,6 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
     // MARK: Service call
 
     private void postImages() {
-        progress = new ProgressDialog(this);
-        progress.setTitle("Posting...");
-        progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
         progress.show();
 
         final DispatchGroup group = new DispatchGroup();
@@ -332,29 +354,22 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
 
     private void notifyIncomplete(){
         Toast.makeText(PostActivity.this, R.string.invalid_input, Toast.LENGTH_LONG).show();
-        progress.hide();
+        if (progress.isShowing() == true) {
+            progress.hide();
+        }
     }
 
     private void postItem(ArrayList<String> paths) {
         String title = etTitle.getText().toString();
+        String description = etDescription.getText().toString();
+        String location = tvLocation.getText().toString();
+
         int price = 0;
         try {
             price = Integer.parseInt(etPrice.getText().toString());
         } catch(NumberFormatException nfe) {
             System.out.println("Could not parse " + nfe);
         }
-
-        if(price == 0){
-            notifyIncomplete();
-            return;
-        }
-
-        String description = etDescription.getText().toString();
-        if("".equals(description)){
-            notifyIncomplete();
-            return;
-        }
-        String location = tvLocation.getText().toString();
 
         Date now = Calendar.getInstance().getTime();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
