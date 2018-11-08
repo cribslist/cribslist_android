@@ -64,6 +64,8 @@
                     android:layout_height="wrap_content"
                     android:onClick="onClickAdd"
                     android:elevation="2dp"
+                    android:clickable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
                     android:background="@drawable/tile_background"
                     android:text="@string/action_add" />
 
@@ -71,6 +73,8 @@
                     android:layout_margin="2dp"
                     android:padding="8dp"
                     android:elevation="2dp"
+                    android:clickable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/tile_background"

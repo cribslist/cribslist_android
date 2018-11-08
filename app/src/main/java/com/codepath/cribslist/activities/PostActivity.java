@@ -81,7 +81,6 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
 
-
         setupViews();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -93,10 +92,21 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
         mImages = new ArrayList<>();
         mCategory = new ArrayList<>();
         mSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
+        resetSlider();
 
         mLatLng = new LatLng(37.7749,-122.4194);
 
         setupSpinner();
+    }
+
+    private void resetSlider() {
+        mSlider.removeAllSliders();
+        DefaultSliderView sliderView = new DefaultSliderView(this);
+        sliderView
+                .image("http://res.cloudinary.com/dollg6ooi/image/upload/v1541652382/1541652382873.png")
+                .setBackgroundColor(Color.TRANSPARENT)
+                .setProgressBarVisible(true);
+        mSlider.addSlider(sliderView);
     }
 
     @Override
@@ -191,7 +201,7 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
     }
 
     private void removeAllImagesFromSlider() {
-        mSlider.removeAllSliders();
+        resetSlider();
         mImages.clear();
     }
 
@@ -253,7 +263,7 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
             DefaultSliderView sliderView = new DefaultSliderView(this);
             sliderView
                     .image(image)
-                    .setBackgroundColor(Color.WHITE)
+                    .setBackgroundColor(Color.TRANSPARENT)
                     .setProgressBarVisible(true);
             mSlider.addSlider(sliderView);
         }

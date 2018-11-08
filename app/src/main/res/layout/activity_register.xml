@@ -50,6 +50,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onClickAdd"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
             android:layout_margin="4dp"
             android:background="@drawable/tile_background"
             android:text="@string/action_add" />
@@ -58,6 +60,8 @@
             android:layout_width="wrap_content"
             android:layout_margin="4dp"
             android:layout_height="wrap_content"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
             android:background="@drawable/tile_background"
             android:onClick="onClickRemove"
             android:text="@string/action_remove" />
