@@ -211,8 +211,10 @@ public class RegisterActivity extends AppCompatActivity implements ActionSheet.A
 
     public void onClickPostBtn(View view) {
         EditText et = findViewById(R.id.etName);
-        if (mUser.getLocation().equals("") == true ||
-                et.getText().equals("") == true) {
+        String name = et.getText().toString();
+        String location = mUser.getLocation();
+        if (name.isEmpty() == true ||
+                location.isEmpty() == true) {
             Toast.makeText(RegisterActivity.this, R.string.invalid_input, Toast.LENGTH_LONG).show();
             return;
         }
