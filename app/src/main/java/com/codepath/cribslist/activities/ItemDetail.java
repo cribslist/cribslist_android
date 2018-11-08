@@ -33,8 +33,10 @@ import com.codepath.cribslist.R;
 import com.codepath.cribslist.models.Item;
 import com.codepath.cribslist.models.User;
 import com.codepath.cribslist.network.CribslistClient;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.glide.slider.library.Animations.DescriptionAnimation;
 import com.glide.slider.library.SliderLayout;
+import com.glide.slider.library.SliderTypes.BaseSliderView;
 import com.glide.slider.library.SliderTypes.DefaultSliderView;
 
 import java.util.ArrayList;
@@ -54,6 +56,7 @@ public class ItemDetail extends AppCompatActivity implements CribslistClient.Get
     private Boolean isOwnListing;
     private NavigationView navMenu;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,11 +64,13 @@ public class ItemDetail extends AppCompatActivity implements CribslistClient.Get
         inquire = findViewById(R.id.inquire);
         blurry = findViewById(R.id.blurry);
         base = findViewById(R.id.base);
+
         Intent i = getIntent();
         profpic = findViewById(R.id.prof);
         Toolbar toolbar = findViewById(R.id.toolbar);
         mDrawer = findViewById(R.id.drawer_layout);
         navMenu = findViewById(R.id.nvView);
+
         mDrawer.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(@NonNull View view, float v) {
@@ -79,7 +84,7 @@ public class ItemDetail extends AppCompatActivity implements CribslistClient.Get
 
             @Override
             public void onDrawerClosed(@NonNull View view) {
-                closeDrawer();
+                unBlurBg();
             }
 
             @Override
@@ -151,19 +156,22 @@ public class ItemDetail extends AppCompatActivity implements CribslistClient.Get
         loadItemAuthorDetail();
     }
 
-
-
-    private void openDrawer(){
+    private void blurBG(){
+        mSlider.stopAutoCycle();
         blurry.setVisibility(View.VISIBLE);
         Blurry.with(ItemDetail.this)
                 .radius(30)
                 .capture(mDrawer)
                 .into(blurry);
-        mSlider.stopAutoCycle();
+
+    }
+
+    private void openDrawer(){
+        blurBG();
         mDrawer.openDrawer(GravityCompat.END);
     }
 
-    private void closeDrawer(){
+    private void unBlurBg(){
         blurry.setVisibility(View.GONE);
         mSlider.startAutoCycle();
     }
@@ -179,19 +187,39 @@ public class ItemDetail extends AppCompatActivity implements CribslistClient.Get
         textView.setText(text);
     }
 
-    public void initSlider(ArrayList<String> listUrl){
+    public void initSlider(final ArrayList<String> listUrl){
         RequestOptions requestOptions = new RequestOptions().fitCenter();
-
+        final PhotoView pv = findViewById(R.id.photo_view);
         for (int i = 0; i < listUrl.size(); i++) {
             DefaultSliderView sliderView = new DefaultSliderView(this);
             sliderView
                     .image(listUrl.get(i))
                     .setRequestOption(requestOptions)
                     .setBackgroundColor(Color.WHITE)
-                    .setProgressBarVisible(true);
+                    .setProgressBarVisible(true)
+                    .setOnSliderClickListener(new BaseSliderView.OnSliderClickListener() {
+                        @Override
+                        public void onSliderClick(BaseSliderView baseSliderView) {
+                                    blurBG();
+                                    String url = listUrl.get(mSlider.getCurrentPosition());
+                                    pv.setVisibility(View.VISIBLE);
+                                    Glide.with(ItemDetail.this).load(url).into(pv);
+                                    blurry.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            unBlurBg();
+                                            pv.setVisibility(View.GONE);
+                                            v.setOnClickListener(null);
+                                        }
+                                    });
+
+                        }
+                    });
 
             mSlider.addSlider(sliderView);
         }
+
+
 
         // set Slider Transition Animation
         mSlider.setPresetTransformer(SliderLayout.Transformer.Tablet);
