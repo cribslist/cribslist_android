@@ -141,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
                 myListings.refreshOwnListings();
             }
             isItemOpen = false;
+
     }
 
     public void setupFAB(){

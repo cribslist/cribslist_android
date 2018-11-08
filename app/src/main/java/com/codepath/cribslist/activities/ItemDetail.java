@@ -113,6 +113,7 @@ public class ItemDetail extends AppCompatActivity implements CribslistClient.Get
         setViewText(R.id.location_text, item.getLocation());
         setViewText(R.id.title, item.getTitle());
         setViewText(R.id.description, item.getDescription());
+        setViewText(R.id.price, "$" + String.valueOf(item.getPrice()));
         ArrayList<String> urls = item.getPhotoURLs();
         initSlider(urls);
         bgImage = findViewById(R.id.bgImg);
