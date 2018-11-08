@@ -97,6 +97,10 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
         mLatLng = new LatLng(37.7749,-122.4194);
 
         setupSpinner();
+
+        progress = new ProgressDialog(this);
+        progress.setTitle("Posting...");
+        progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
     }
 
     private void resetSlider() {
@@ -323,9 +327,6 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
     // MARK: Service call
 
     private void postImages() {
-        progress = new ProgressDialog(this);
-        progress.setTitle("Posting...");
-        progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
         progress.show();
 
         final DispatchGroup group = new DispatchGroup();
@@ -353,7 +354,9 @@ public class PostActivity extends AppCompatActivity implements ActionSheet.Actio
 
     private void notifyIncomplete(){
         Toast.makeText(PostActivity.this, R.string.invalid_input, Toast.LENGTH_LONG).show();
-        progress.hide();
+        if (progress.isShowing() == true) {
+            progress.hide();
+        }
     }
 
     private void postItem(ArrayList<String> paths) {
