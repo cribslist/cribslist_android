@@ -71,6 +71,7 @@ public class Listings extends Fragment {
 
         layoutManager = new GridLayoutManager(getContext(), numberOfColumns);
         mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.getRecycledViewPool().setMaxRecycledViews(0, 0);
         Boolean isOwnListings = listingType != 0;
         mAdapter = new ItemAdapter(items, isOwnListings);
         mRecyclerView.setAdapter(mAdapter);

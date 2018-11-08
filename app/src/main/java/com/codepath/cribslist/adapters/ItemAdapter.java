@@ -51,6 +51,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                         makeSceneTransitionAnimation((Activity)context,(View)mThumbnail, "main");
                 i.putExtra("item", item);
                 i.putExtra("isOwnListing", isOwnListings);
+                i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 context.startActivity(i, options.toBundle());
             }
         }

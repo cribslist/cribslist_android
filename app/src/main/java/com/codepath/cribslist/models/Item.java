@@ -35,6 +35,9 @@ public class Item implements Parcelable {
     }
 
     public long getPrice() {
+        if(price == 0){
+            return 25;
+        }
         return price;
     }
 
