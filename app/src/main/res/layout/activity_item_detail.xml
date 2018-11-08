@@ -134,6 +134,8 @@
             android:layout_marginBottom="8dp"
             android:padding="2dp"
             android:text="@string/inquire"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
             android:background="@drawable/tile_background"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
